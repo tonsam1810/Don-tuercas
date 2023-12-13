@@ -1,0 +1,342 @@
+package mantenimiento;
+
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.ArrayList;
+
+import javax.imageio.spi.ImageReaderWriterSpi;
+
+import entidad.Usuarios;
+import interfaces.UsuarioInterfacesDAO;
+import utils.MySQLConexion8;
+
+public class GestionUsuarioDAO implements UsuarioInterfacesDAO{
+
+	@Override
+	public int registrar(Usuarios u) {
+		int res = 0;
+		Connection con = null;
+		PreparedStatement pstm = null;
+		try {
+			// paso 1: establecer la conexi�n con la base de datos
+			con = MySQLConexion8.getConexion();
+			// paso 2: determinar la instrucc�n para registrar
+			// insert into tb_usuarios values ("0001","Ethan","Vel�squez","EV018","12345","7894562","1");
+			String sql = "insert into tb_usuarios values (?,?,?,?,?,?,?)";
+			// paso 3: crear el objeto pstm y enviar la variable SQL
+			pstm = con.prepareStatement(sql);
+			// paso 4: parametros
+			pstm.setInt(1, u.getCodigo());
+			pstm.setString(2, u.getNombre());
+			pstm.setString(3, u.getApellido());
+			pstm.setString(4, u.getUsuario());
+			pstm.setString(5, u.getClave());
+			pstm.setInt(6, u.getDni());
+			pstm.setInt(7, u.getCargo());
+			// paso 5: ejecutar la instrucci�n
+			res = pstm.executeUpdate();
+			
+		} catch (Exception e) {
+			System.out.println("Error <<<<< en la instrucci�n SQL de registrar "+ e.getMessage());
+			
+		}finally {
+			try {
+				if(pstm != null)
+					pstm.close();
+				if(con != null)
+					con.close();
+			} catch (SQLException e2) {
+				System.out.println("Error al cerrar la base de datos "+e2.getMessage());
+			}
+		}
+		
+		return res;
+	}
+
+	@Override
+	public int actualizar(Usuarios u) {
+		int estado = 0;
+		Connection con = null;
+		PreparedStatement pstm = null;
+		try {
+		// 1. conectarse a la BD
+		con = MySQLConexion8.getConexion();
+		// 2. Instrucci�n SQL
+		// update tb_usuarios set nombre = "Manuel", apellido = "Vel�squez", usuario = "MV010", clave = "lz001", dni ="1234567", id_cargo = "2" where id_usuario = 1;
+		String sql = "update tb_usuarios set nombre = ?, apellido = ?, usuario = ?, clave = ?, dni = ?, id_cargo = ? where id_usuarios = ?";
+		// 3. Enviar la instrucci�n SQL al objeto pstm
+		pstm = con.prepareStatement(sql);
+		// 4. Parametros
+		pstm.setString(1, u.getNombre());
+		pstm.setString(2, u.getApellido());
+		pstm.setString(3, u.getUsuario());
+		pstm.setString(4, u.getClave());
+		pstm.setInt(5, u.getDni());
+		pstm.setInt(6, u.getCargo());
+		pstm.setInt(7, u.getCodigo());
+		
+		// 5. Ejecutar instrucci�n
+		estado = pstm.executeUpdate();
+		
+	} catch (Exception e) {
+		System.out.println("Error en la instrucci�n SQL - ACTUALIZAR "+e.getMessage());
+	}finally {
+		try {
+			if(pstm != null)
+				pstm.close();
+			if(con != null)
+				con.close();
+			
+		} catch (SQLException e2) {
+			System.out.println("Error al cerrar la BD "+e2.getMessage());
+		}
+		
+	}
+		return estado;
+	}
+
+	@Override
+	public int eliminar(int codigo) {
+		int estado = 0;
+		Connection con = null;
+		PreparedStatement pstm = null;
+		try {
+			// Establecer conexion
+			con = MySQLConexion8.getConexion();
+			
+			// Instruccion SQL
+			String sql = "delete from tb_usuarios where id_usuarios =?";
+			
+			// Crear el objeto pstm y enviar la instruccion SQL
+			pstm = con.prepareStatement(sql);
+			
+			// parametros 
+			pstm.setInt(1, codigo);
+			
+			// Ejecutar
+			estado = pstm.executeUpdate();
+			
+		} catch (Exception e) {
+			System.out.println("Error en la instrucción SQL - Eliminar "+e.getMessage());
+		}finally {
+			try {
+				if(pstm != null)pstm.close();
+				if(con!= null)con.close();								
+			} catch (SQLException e2) {
+				System.out.println("Error al cerrar la BD "+e2.getMessage());
+			}
+		}
+		return estado;
+	}
+
+	@Override
+	public Usuarios buscarUsuarios(int codigo) {
+		Usuarios usuarios = null;
+		Connection con = null;
+		PreparedStatement pstm = null;
+		ResultSet res = null;
+		try {
+			// Establecer conexión
+			con = MySQLConexion8.getConexion();
+			
+			// Instruccion SQL
+			String sql = "select * from tb_usuarios where id_usuarios = ?";
+			
+			// Crear el objeto pstm y enviar la instruccion SQL
+			pstm = con.prepareStatement(sql);
+			
+			// Parametros
+			pstm.setInt(1, codigo);
+			
+			// Ejecutar la instruccion - consulta
+			res = pstm.executeQuery();
+			
+			//Validar el resultado de la consulta
+			if(res.next()) { // Retorna true mientras exista info en la consulta
+			// Asignar valores a los atributos de la clase usuarios
+				usuarios = new Usuarios(res.getInt(1),
+										res.getString(2),
+										res.getString(3),
+										res.getString(4),
+										res.getString(5),
+										res.getInt(6),
+										res.getInt(7)
+										);				
+			}
+			
+		} catch (Exception e) {
+			System.out.println("Error en la instrución SQL - Consultar por código"+e.getMessage());
+		}finally {
+			try {
+				if(pstm != null)pstm.close();
+				if(res != null)res.close();
+				if(con != null)con.close();								
+			} catch (SQLException e2) {
+				System.out.println("Error al cerrar la BD "+e2.getMessage());
+			}
+		}
+		return usuarios;
+	}
+
+	@Override
+	public ArrayList<Usuarios> listarUsuarios() {
+		ArrayList<Usuarios> lista = new ArrayList<Usuarios>(); {
+		Usuarios user;
+		Connection con = null;
+		PreparedStatement pstm = null;
+		ResultSet res = null;
+		try {
+			// Conexion con la BD
+			con = MySQLConexion8.getConexion();
+			
+			// Instrucción SQL - consulta
+			String sql = "select * from tb_usuarios;";
+			
+			// Enviar la instruccion SQL al objeto "PSTM"
+			pstm = con.prepareStatement(sql);
+			
+			// Ejecutar la instrucción
+			res = pstm.executeQuery();
+			
+			// Bucle para realizar el recorrido al objeto "RES"
+			while (res.next()) {
+				// Crear el objeto usuarios
+				user = new Usuarios();
+				
+				// Setear (asignar los valores obtenidos a los atributos)
+				user.setCodigo(res.getInt(1));
+				user.setNombre(res.getString(2));
+				user.setApellido(res.getString(3));
+				user.setUsuario(res.getString(4));
+				user.setClave(res.getString(5));
+				user.setDni(res.getInt(6));
+				user.setCargo(res.getInt(7));
+				
+				// Añadir al objeto el arreglo lista
+				lista.add(user);		
+				
+			}
+			
+		} catch (Exception e) {
+			System.out.println("Error en la instruccion SQL - Listar usuarios" + e.getMessage());
+		}finally {
+			try {
+				if(pstm != null)pstm.close();
+				if(con != null)con.close();
+				if(res != null)res.close();			
+			} catch (SQLException e2) {
+				System.out.println("Error al cerra la BD "+e2.getMessage());
+			}
+		}
+		}
+		return lista;
+	}
+
+	@Override
+	public Usuarios validarAcceso(String user, String clave) {
+		Usuarios usuarios = null;
+		Connection con = null;
+		PreparedStatement pstm = null;
+		ResultSet res = null;
+		try {
+			// Conexión con la BD
+			con = MySQLConexion8.getConexion();
+			
+			// Instrucción SQL Validar Acceso
+			String sql = "{call validarAcceso(?,?)}";
+			
+			// Enviar la instrucción al objeto PSTM
+			pstm = con.prepareStatement(sql);
+			
+			// Parametros
+			pstm.setString(1, user);
+			pstm.setString(2, clave);
+			
+			// Ejecutar la instrucción
+			res = pstm.executeQuery();
+			
+			// Bucle
+			while (res.next()) {
+				usuarios = new Usuarios(res.getInt(1),
+										res.getString(2),
+										res.getString(3),
+										res.getString(4),
+										res.getString(5),
+										res.getInt(6),
+										res.getInt(7)
+										);
+			}
+			
+		} catch (Exception e) {
+			System.out.println("Error en la instrucción SQL - Validar Acceso "+e.getMessage());
+		}finally {
+			try {
+				if(pstm != null)pstm.close();
+				if(res != null)res.close();
+				if(con != null)con.close();
+			} catch (SQLException e2) {
+				System.out.println("Error al cerrar la BD "+e2.getMessage());
+			}
+		}
+		return usuarios;
+	}
+
+	@Override
+	public ArrayList<Usuarios> listarUsuariosXCargo(int cargo) {
+		ArrayList<Usuarios> lista = new ArrayList<Usuarios>();
+		Usuarios user;
+		Connection con = null;
+		PreparedStatement pstm = null;
+		ResultSet res = null;
+		try {
+			// Conexión con la BD
+			con = MySQLConexion8.getConexion();
+			
+			// Instrucion SQL
+			String sql = "select * from tb_usuarios where id_cargo = ?";
+			
+			// Enviar instrucción al objeto PSTM
+			pstm = con.prepareStatement(sql);
+			
+			// Parametros
+			pstm.setInt(1, cargo);
+			
+			// Ejecutar la instruccion
+			res = pstm.executeQuery();
+			
+			//bucle
+			while(res.next()) {
+				user = new Usuarios(res.getInt(1),
+									res.getString(2),
+									res.getString(3),
+									res.getString(4),
+									res.getString(5),
+									res.getInt(6),
+									res.getInt(7)
+									);
+				lista.add(user);
+			}
+			
+		} catch (Exception e) {
+			System.out.println("Error en la instrucción SQL - Consultar por Cargo "+e.getMessage());
+		}finally {
+			try {
+				if(pstm != null)pstm.close();
+				if(res != null)res.close();
+				if(con != null)con.close();				
+			} catch (SQLException e2) {
+				System.out.println("Error al cerrar la BD "+e2.getMessage());
+			}
+		}
+		return lista;
+	}
+
+	@Override
+	public int generarCodigoUsuario() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+}

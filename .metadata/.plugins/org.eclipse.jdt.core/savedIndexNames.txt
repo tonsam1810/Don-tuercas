@@ -1,0 +1,8 @@
+INDEX VERSION 1.131+C:\Users\Usuario\Dropbox\Proyecto 2022\.metadata\.plugins\org.eclipse.jdt.core
+760091825.index
+3973711601.index
+958817082.index
+1962149316.index
+3715802310.index
+1099061629.index
+1865797976.index

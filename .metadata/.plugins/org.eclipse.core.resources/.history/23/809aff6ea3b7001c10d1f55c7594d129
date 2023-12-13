@@ -1,0 +1,55 @@
+package mantenimiento;
+
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+
+import interfaces.VentasInterfacesDAO;
+import utils.MySQLConexion8;
+
+public class GestionVentasDAO implements VentasInterfacesDAO{
+
+	@Override
+	public int generarNumeroFactura() {
+		int idFactura = 0;
+		Connection con = null;
+		PreparedStatement pstm = null;
+		ResultSet res = null;
+		try {
+			//Conexion con la BD
+			con = MySQLConexion8.getConexion();
+			
+			// Intruccion SQL
+			String sql = "select substring(max(num_bol),2) from tb_cab_boleta;";
+			
+			// Crear el objeto PSTM y enviar la instruccion SQL
+			pstm = con.prepareStatement(sql);
+			
+			// No hay parametros
+			
+			// Ejecutar la instruccion
+			res = pstm.executeQuery();
+			
+			// Validar
+			if(res.next()) {
+				DecimalFormat df = new DecimalFormat("0000"); // 0005
+				numBol = "B"+df.format(Integer.parseInt(res.getString(1)) +1);
+					   //B0005
+			}
+			
+		} catch (Exception e) {
+			System.out.println("Error al generar número de boleta "+e.getMessage());
+		}finally {
+			try {
+				if(pstm != null) pstm.close();
+				if(res != null) res.close();
+				if(con != null) con.close();
+			} catch (SQLException e2) {
+				System.out.println("Error al cerrar la BD "+e2.getMessage());
+			}
+		}
+		
+		return idFactura;
+	}
+
+}

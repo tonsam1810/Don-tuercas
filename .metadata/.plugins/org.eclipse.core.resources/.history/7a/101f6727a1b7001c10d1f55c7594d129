@@ -1,0 +1,19 @@
+package entidad;
+
+public class DetalleFactura {
+
+	// Atributos privados
+	private int idFactura;
+	private int idProducto;
+	private int cantPedidos;
+	private double PrecioVenta;
+	private double precioTotal;
+	
+	public DetalleFactura() {
+		
+	}
+	
+	// Constructores
+	
+	
+}

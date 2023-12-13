@@ -1,0 +1,12 @@
+package interfaces;
+
+import java.util.ArrayList;
+
+import entidad.proveedores;
+
+public interface ComboBoxInterfacesDAO {
+	
+	// Listar proveedores de productos
+	public ArrayList<proveedores> listarProveedor();
+
+}

@@ -1,0 +1,343 @@
+package vista;
+
+import java.awt.BorderLayout;
+import java.awt.EventQueue;
+
+import javax.swing.JFrame;
+import javax.swing.JInternalFrame;
+import javax.swing.JPanel;
+import javax.swing.border.EmptyBorder;
+import javax.swing.table.DefaultTableModel;
+import mantenimiento.GestionClienteDAO;
+import utils.Validaciones;
+
+import java.awt.SystemColor;
+import javax.swing.UIManager;
+import javax.swing.JScrollPane;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+
+import java.awt.Font;
+import javax.swing.SwingConstants;
+import javax.swing.JButton;
+import javax.swing.ImageIcon;
+import javax.swing.JSeparator;
+import javax.swing.JTextField;
+import javax.swing.JTable;
+import java.awt.Color;
+import java.awt.event.ActionListener;
+import java.awt.event.ActionEvent;
+
+public class FrmRegistroClientes extends JFrame implements ActionListener {
+
+	private JPanel contentPane;
+	private JLabel lblNewLabel;
+	private JButton btnNuevoCliente;
+	private JButton btnActualizarCliente;
+	private JButton btnEliminarCliente;
+	private JButton btnRegistroCliente;
+	private JSeparator separator;
+	private JLabel lblCodigo;
+	private JLabel lblTelefono;
+	private JLabel lblRuc;
+	private JLabel lblCorreo;
+	private JLabel lblRazSocial;
+	private JLabel lblDireccion;
+	private JTextField txtCodigo;
+	private JTextField txtRuc;
+	private JTextField txtRazSocial;
+	private JTextField txtTelefono;
+	private JTextField txtCorreo;
+	private JTextField txtDireccion;
+	private JTable tblClientes;
+	private JScrollPane scrollPane;
+	private JButton btnBuscar;
+
+	// Instanciar objeto para definir la tabla
+	DefaultTableModel model = new DefaultTableModel();
+	
+	// 
+	GestionClienteDAO gCli = new GestionClienteDAO();
+	
+	/**
+	 * Launch the application.
+	 */
+	public static void main(String[] args) {
+		try {
+			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+		} catch (Throwable e) {
+			e.printStackTrace();
+		}
+		EventQueue.invokeLater(new Runnable() {
+			public void run() {
+				try {
+					FrmRegistroClientes frame = new FrmRegistroClientes();
+					frame.setVisible(true);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+		});
+	}
+
+	/**
+	 * Create the frame.
+	 */
+	public FrmRegistroClientes() {
+//		setClosable(true);
+//		setMaximizable(true);
+//		setIconifiable(true);
+		initGUI();
+	}
+	private void initGUI() {
+		setTitle("DON TUERCAS S.A.C. - Mantenimiento Clientes");
+		setBounds(100, 100, 841, 652);
+		contentPane = new JPanel();
+		contentPane.setBackground(SystemColor.activeCaption);
+		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
+		setContentPane(contentPane);
+		contentPane.setLayout(null);
+		
+		lblNewLabel = new JLabel("Mantenimiento de Clientes");
+		lblNewLabel.setForeground(Color.WHITE);
+		lblNewLabel.setBackground(Color.BLACK);
+		lblNewLabel.setOpaque(true);
+		lblNewLabel.setHorizontalAlignment(SwingConstants.CENTER);
+		lblNewLabel.setFont(new Font("Trebuchet MS", Font.BOLD, 18));
+		lblNewLabel.setBounds(0, 11, 829, 47);
+		contentPane.add(lblNewLabel);
+		
+		btnNuevoCliente = new JButton("");
+		btnNuevoCliente.setContentAreaFilled(false);
+		btnNuevoCliente.setBorderPainted(false);
+		btnNuevoCliente.setIcon(new ImageIcon(FrmRegistroClientes.class.getResource("/img/299068_add_sign_icon.png")));
+		btnNuevoCliente.setFont(new Font("Trebuchet MS", Font.BOLD, 12));
+		btnNuevoCliente.setBounds(661, 242, 32, 32);
+		contentPane.add(btnNuevoCliente);
+		
+		btnActualizarCliente = new JButton("");
+		btnActualizarCliente.setContentAreaFilled(false);
+		btnActualizarCliente.setBorderPainted(false);
+		btnActualizarCliente.setIcon(new ImageIcon(FrmRegistroClientes.class.getResource("/img/46828_reload_refrsh_calculate_icon.png")));
+		btnActualizarCliente.setFont(new Font("Trebuchet MS", Font.BOLD, 12));
+		btnActualizarCliente.setBounds(745, 242, 32, 32);
+		contentPane.add(btnActualizarCliente);
+		
+		btnEliminarCliente = new JButton("");
+		btnEliminarCliente.setContentAreaFilled(false);
+		btnEliminarCliente.setBorderPainted(false);
+		btnEliminarCliente.setIcon(new ImageIcon(FrmRegistroClientes.class.getResource("/img/7549103_user_interface_remove_delete_trash_icon.png")));
+		btnEliminarCliente.setFont(new Font("Trebuchet MS", Font.BOLD, 12));
+		btnEliminarCliente.setBounds(787, 242, 32, 32);
+		contentPane.add(btnEliminarCliente);
+		
+		btnRegistroCliente = new JButton("");
+		btnRegistroCliente.addActionListener(this);
+		btnRegistroCliente.setContentAreaFilled(false);
+		btnRegistroCliente.setBorderPainted(false);
+		btnRegistroCliente.setIcon(new ImageIcon(FrmRegistroClientes.class.getResource("/img/285657_floppy_guardar_save_icon.png")));
+		btnRegistroCliente.setFont(new Font("Trebuchet MS", Font.BOLD, 12));
+		btnRegistroCliente.setBounds(703, 242, 32, 32);
+		contentPane.add(btnRegistroCliente);
+		
+		separator = new JSeparator();
+		separator.setBounds(791, 206, 1, 2);
+		contentPane.add(separator);
+		
+		lblCodigo = new JLabel("Codigo:");
+		lblCodigo.setFont(new Font("Comic Sans MS", Font.PLAIN, 16));
+		lblCodigo.setBounds(24, 80, 80, 23);
+		contentPane.add(lblCodigo);
+		
+		lblTelefono = new JLabel("Telefono:");
+		lblTelefono.setFont(new Font("Comic Sans MS", Font.PLAIN, 16));
+		lblTelefono.setBounds(554, 80, 80, 14);
+		contentPane.add(lblTelefono);
+		
+		lblRuc = new JLabel("Ruc:");
+		lblRuc.setFont(new Font("Comic Sans MS", Font.PLAIN, 16));
+		lblRuc.setBounds(554, 130, 45, 14);
+		contentPane.add(lblRuc);
+		
+		lblCorreo = new JLabel("Correo:");
+		lblCorreo.setFont(new Font("Comic Sans MS", Font.PLAIN, 16));
+		lblCorreo.setBounds(24, 228, 80, 14);
+		contentPane.add(lblCorreo);
+		
+		lblRazSocial = new JLabel("Razon Social:");
+		lblRazSocial.setFont(new Font("Comic Sans MS", Font.PLAIN, 16));
+		lblRazSocial.setBounds(21, 132, 112, 14);
+		contentPane.add(lblRazSocial);
+		
+		lblDireccion = new JLabel("Direccion:");
+		lblDireccion.setFont(new Font("Comic Sans MS", Font.PLAIN, 16));
+		lblDireccion.setBounds(21, 180, 80, 14);
+		contentPane.add(lblDireccion);
+		
+		txtCodigo = new JTextField();
+		txtCodigo.setBounds(21, 102, 102, 20);
+		contentPane.add(txtCodigo);
+		txtCodigo.setColumns(10);
+		
+		txtRuc = new JTextField();
+		txtRuc.setBounds(554, 146, 139, 20);
+		contentPane.add(txtRuc);
+		txtRuc.setColumns(10);
+		
+		txtRazSocial = new JTextField();
+		txtRazSocial.setBounds(21, 148, 359, 20);
+		contentPane.add(txtRazSocial);
+		txtRazSocial.setColumns(10);
+		
+		txtTelefono = new JTextField();
+		txtTelefono.setBounds(554, 100, 139, 20);
+		contentPane.add(txtTelefono);
+		txtTelefono.setColumns(10);
+		
+		txtCorreo = new JTextField();
+		txtCorreo.setBounds(21, 242, 359, 20);
+		contentPane.add(txtCorreo);
+		txtCorreo.setColumns(10);
+		
+		txtDireccion = new JTextField();
+		txtDireccion.setBounds(21, 198, 359, 20);
+		contentPane.add(txtDireccion);
+		txtDireccion.setColumns(10);
+		
+		scrollPane = new JScrollPane();
+		scrollPane.setBounds(10, 284, 809, 329);
+		contentPane.add(scrollPane);
+		
+		tblClientes = new JTable();
+		tblClientes.setFillsViewportHeight(true);
+		scrollPane.setViewportView(tblClientes);
+		
+		btnBuscar = new JButton("");
+		btnBuscar.setIcon(new ImageIcon(FrmRegistroClientes.class.getResource("/img/34229_find_magnifier_search_zoom_icon.png")));
+		btnBuscar.setFont(new Font("Trebuchet MS", Font.BOLD, 12));
+		btnBuscar.setContentAreaFilled(false);
+		btnBuscar.setBorderPainted(false);
+		btnBuscar.setBounds(133, 90, 32, 32);
+		contentPane.add(btnBuscar);
+		
+		// Determinar Columnas
+		model.addColumn("Código");
+		model.addColumn("Raz. Social");
+		model.addColumn("Ruc");
+		model.addColumn("Teléfono");
+		model.addColumn("Dirección");
+		model.addColumn("Correo");
+		
+		// Asignar
+		tblClientes.setModel(model);
+				
+	}
+	public void actionPerformed(ActionEvent e) {
+		if (e.getSource() == btnRegistroCliente) {
+			actionPerformedBtnRegistroCliente(e);
+		}
+	}
+	protected void actionPerformedBtnRegistroCliente(ActionEvent e) {
+		registrarClientes();
+	}
+
+	private void registrarClientes() {
+		// Variables
+		String razSocial, direc, correo;
+		int cod, ruc, telf;
+		
+		// Entradas
+		cod = getCodigo();
+		razSocial = getRazSocial();
+		ruc = getRuc();
+		telf = getTelefono();
+		direc = getDireccion();
+		correo = getCorreo();
+		
+	}
+
+	private int getCodigo() {
+		return gCli.generarCodigoCliente();
+	}
+
+	private String getRazSocial() {
+		String raz = null;
+		// validar caja de texto vacia
+		if (txtRazSocial.getText().trim().length() == 0) {
+			mensajeError("Ingresar Raz. Social del cliente");
+			txtRazSocial.requestFocus();			
+		} else if (txtRazSocial.getText().trim().matches(Validaciones.TEXTO)) {
+			raz = txtRazSocial.getText().trim();
+		} else {
+			mensajeError("Formato no valido !!");
+			txtRazSocial.setText("");
+			txtRazSocial.requestFocus();
+		} 
+
+		return raz;
+	}
+
+	// 1: Mensaje Error
+	 	private void mensajeError(String msj) {
+	 		JOptionPane.showMessageDialog(this, msj, "Error !!", 0);		
+	 	}
+	 	// 2: Mensaje Exito
+	 	private void mensajeExito(String msj) {
+			JOptionPane.showMessageDialog(this, msj,"Sistema", 1);
+			
+		}
+
+	private int getRuc() {
+		int ruc = 0;
+		if(txtRuc.getText().trim().length() == 0) {
+			mensajeError("Ingresar el RUC del cliente");
+			txtRuc.requestFocus();
+		}else if(txtRuc.getText().trim().matches(Validaciones.RUC)){
+			ruc = Integer.parseInt(txtRuc.getText());
+		}else {
+			mensajeError("Formato del RUC incorrecto");
+			txtRuc.setText("");
+			txtRuc.requestFocus();
+		}
+		
+		return ruc;
+	}
+
+	private int getTelefono() {
+		int telf = 0;
+		if(txtTelefono.getText().trim().length() == 0) {
+			mensajeError("Ingresar el Telf. del cliente");
+			txtTelefono.requestFocus();
+		}else if(txtTelefono.getText().trim().matches(Validaciones.Telefono)){
+			telf = Integer.parseInt(txtTelefono.getText());
+		}else {
+			mensajeError("Formato del Telf. incorrecto");
+			txtTelefono.setText("");
+			txtTelefono.requestFocus();
+		}
+		
+		return telf;
+	}
+
+	private String getDireccion() {
+		String direc = null;
+		// validar caja de texto vacia
+		if (txtDireccion.getText().trim().length() == 0) {
+			mensajeError("Ingresar direccion del cliente");
+			txtDireccion.requestFocus();			
+		} else if (txtDireccion.getText().trim().matches(Validaciones.Correo)) {
+			direc = txtDireccion.getText().trim();
+		} else {
+			mensajeError("Formato del correo no valido !!");
+			txtDireccion.setText("");
+			txtDireccion.requestFocus();
+		} 
+
+		return direc;
+	}
+
+	private String getCorreo() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+}

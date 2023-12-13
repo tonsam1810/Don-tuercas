@@ -1,0 +1,396 @@
+package vista;
+
+import java.awt.EventQueue;
+import java.awt.Font;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+
+import javax.swing.JButton;
+import javax.swing.JInternalFrame;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JTextField;
+import javax.swing.SwingConstants;
+
+import entidad.Productos;
+import entidad.Proveedores;
+import mantenimiento.GestionProveedoresDAO;
+import utils.Validaciones;
+import javax.swing.ImageIcon;
+
+public class FrmProveedores extends JInternalFrame implements ActionListener {
+	private JButton btnNuevoProveedor;
+	private JButton btnActualizarProveedor;
+	private JButton btnEliminarProveedor;
+	private JLabel lblCodigo;
+	private JLabel lblRazSocial;
+	private JLabel lblTelefono;
+	private JLabel lblDireccion;
+	private JLabel lblCorreo;
+	private JTextField txtCorreoProveedor;
+	private JTextField txtDireccionProveedor;
+	private JTextField txtTelefonoProveedor;
+	private JTextField txtRazonSocialProveedor;
+	private JTextField txtCodigoProveedor;
+	private JLabel lblMantenimientoDeProveedores;
+	private JLabel lblRuc;
+	private JTextField txtRucProveedores;
+	private JButton btnNewButton;
+	
+	//instanciar objeto "gProvee" para acceder a los metodos CRUD
+		GestionProveedoresDAO gProvee = new GestionProveedoresDAO();
+		private JButton btnRegistrarProveedor;
+
+	/**
+	 * Launch the application.
+	 */
+	public static void main(String[] args) {
+		EventQueue.invokeLater(new Runnable() {
+			public void run() {
+				try {
+					FrmProveedores frame = new FrmProveedores();
+					frame.setVisible(true);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+		});
+	}
+
+	/**
+	 * Create the frame.
+	 */
+	public FrmProveedores() {
+		setMaximizable(true);
+		setIconifiable(true);
+		setClosable(true);
+		setBounds(100, 100, 758, 477);
+		getContentPane().setLayout(null);
+		
+		btnNuevoProveedor = new JButton("Nuevo");
+		btnNuevoProveedor.setHorizontalAlignment(SwingConstants.LEFT);
+		btnNuevoProveedor.setFont(new Font("Trebuchet MS", Font.BOLD, 12));
+		btnNuevoProveedor.setBounds(29, 134, 130, 40);
+		getContentPane().add(btnNuevoProveedor);
+		
+		btnActualizarProveedor = new JButton("Actualizar");
+		btnActualizarProveedor.addActionListener(this);
+		btnActualizarProveedor.setHorizontalAlignment(SwingConstants.LEFT);
+		btnActualizarProveedor.setFont(new Font("Trebuchet MS", Font.BOLD, 12));
+		btnActualizarProveedor.setBounds(29, 236, 130, 40);
+		getContentPane().add(btnActualizarProveedor);
+		
+		btnEliminarProveedor = new JButton("Eliminar");
+		btnEliminarProveedor.setHorizontalAlignment(SwingConstants.LEFT);
+		btnEliminarProveedor.setFont(new Font("Trebuchet MS", Font.BOLD, 12));
+		btnEliminarProveedor.setBounds(29, 287, 130, 40);
+		getContentPane().add(btnEliminarProveedor);
+		
+		lblCodigo = new JLabel("Codigo");
+		lblCodigo.setFont(new Font("Trebuchet MS", Font.BOLD, 12));
+		lblCodigo.setBounds(201, 123, 80, 14);
+		getContentPane().add(lblCodigo);
+		
+		lblRazSocial = new JLabel("Razon Social");
+		lblRazSocial.setFont(new Font("Trebuchet MS", Font.BOLD, 12));
+		lblRazSocial.setBounds(201, 174, 80, 14);
+		getContentPane().add(lblRazSocial);
+		
+		lblTelefono = new JLabel("Telefono");
+		lblTelefono.setFont(new Font("Trebuchet MS", Font.BOLD, 12));
+		lblTelefono.setBounds(201, 368, 80, 14);
+		getContentPane().add(lblTelefono);
+		
+		lblDireccion = new JLabel("Direccion");
+		lblDireccion.setFont(new Font("Trebuchet MS", Font.BOLD, 12));
+		lblDireccion.setBounds(201, 276, 80, 14);
+		getContentPane().add(lblDireccion);
+		
+		lblCorreo = new JLabel("Correo");
+		lblCorreo.setFont(new Font("Trebuchet MS", Font.BOLD, 12));
+		lblCorreo.setBounds(201, 326, 80, 14);
+		getContentPane().add(lblCorreo);
+		
+		txtCorreoProveedor = new JTextField();
+		txtCorreoProveedor.setColumns(10);
+		txtCorreoProveedor.setBounds(291, 324, 315, 20);
+		getContentPane().add(txtCorreoProveedor);
+		
+		txtDireccionProveedor = new JTextField();
+		txtDireccionProveedor.setColumns(10);
+		txtDireccionProveedor.setBounds(291, 274, 404, 20);
+		getContentPane().add(txtDireccionProveedor);
+		
+		txtTelefonoProveedor = new JTextField();
+		txtTelefonoProveedor.setColumns(10);
+		txtTelefonoProveedor.setBounds(291, 366, 86, 20);
+		getContentPane().add(txtTelefonoProveedor);
+		
+		txtRazonSocialProveedor = new JTextField();
+		txtRazonSocialProveedor.setColumns(10);
+		txtRazonSocialProveedor.setBounds(291, 172, 404, 20);
+		getContentPane().add(txtRazonSocialProveedor);
+		
+		txtCodigoProveedor = new JTextField();
+		txtCodigoProveedor.setColumns(10);
+		txtCodigoProveedor.setBounds(291, 121, 86, 20);
+		getContentPane().add(txtCodigoProveedor);
+		
+		lblMantenimientoDeProveedores = new JLabel("Mantenimiento de Proveedores");
+		lblMantenimientoDeProveedores.setHorizontalAlignment(SwingConstants.CENTER);
+		lblMantenimientoDeProveedores.setFont(new Font("Trebuchet MS", Font.BOLD, 18));
+		lblMantenimientoDeProveedores.setBounds(126, 28, 480, 47);
+		getContentPane().add(lblMantenimientoDeProveedores);
+		
+		lblRuc = new JLabel("Ruc");
+		lblRuc.setFont(new Font("Trebuchet MS", Font.BOLD, 12));
+		lblRuc.setBounds(201, 221, 80, 14);
+		getContentPane().add(lblRuc);
+		
+		txtRucProveedores = new JTextField();
+		txtRucProveedores.setColumns(10);
+		txtRucProveedores.setBounds(291, 219, 404, 20);
+		getContentPane().add(txtRucProveedores);
+		
+		btnNewButton = new JButton("Buscar");
+		btnNewButton.addActionListener(this);
+		btnNewButton.setBounds(390, 120, 89, 23);
+		getContentPane().add(btnNewButton);
+		
+		btnRegistrarProveedor = new JButton("Registrar");
+		btnRegistrarProveedor.addActionListener(this);
+		btnRegistrarProveedor.setHorizontalAlignment(SwingConstants.LEFT);
+		btnRegistrarProveedor.setFont(new Font("Trebuchet MS", Font.BOLD, 12));
+		btnRegistrarProveedor.setBounds(29, 185, 130, 40);
+		getContentPane().add(btnRegistrarProveedor);
+
+	}
+	public void actionPerformed(ActionEvent e) {
+		if (e.getSource() == btnActualizarProveedor) {
+			actionPerformedBtnActualizarProveedor(e);
+		}
+		if (e.getSource() == btnNewButton) {
+			actionPerformedBtnNewButton(e);
+		}
+		if (e.getSource() == btnRegistrarProveedor) {
+			registrarDatos();
+		}
+	}
+	
+	
+	void registrarDatos(){
+		// variables
+		int codigo, ruc, telefono;
+		String  razonSocial, direccion,correo;
+		// entradas
+		codigo=getCodigo();
+		razonSocial=getRazonSocial();
+		ruc=getRuc();
+		telefono=getTelefono();
+		direccion=getDireccion();
+		correo=getCorreo();
+		//validacion
+		if (codigo==0|| razonSocial==null||ruc==0||telefono==0||direccion==null||correo==null) {
+			return;
+		}else {
+			//crear objeto de la clase Usuario
+			Proveedores p = new Proveedores();
+			//setear (asignar los nuevo valores a los atributos privados)
+			p.setCodigo(codigo);
+			p.setRazonSocial(razonSocial);
+			p.setRuc(ruc);
+			p.setTelefono(telefono);
+			p.setDireccion(direccion);
+			p.setCorreo(correo);
+			
+			//invocar metodo registrar
+			int res = gProvee.registrar(p);
+			//validar el resultado del metodo registrar
+			if (res==0) {
+				mensajeError("Error en el registro");
+			} else {
+				mensajeExito("Registro exitoso");
+			}
+		}
+		// procesos
+		
+		// salidas
+		
+		
+	}
+
+	private void mensajeExito(String msj) {
+		JOptionPane.showMessageDialog(this,msj);
+		
+	}
+
+	private int getCodigo() {
+		int codigo= 0;
+		if(txtCodigoProveedor.getText().trim().length()==0) {
+			mensajeError("Ingresar codigo");
+			txtCodigoProveedor.requestFocus();
+		}
+		else if (txtCodigoProveedor.getText().trim().matches(Validaciones.Codigo)) {
+			codigo=Integer.parseInt(txtCodigoProveedor.getText().trim());
+		}else {
+			mensajeError("Formato incorrecto de codigo, ingresar 4 numeros");
+			txtCodigoProveedor.setText("");
+			txtCodigoProveedor.requestFocus();
+		}
+		
+		return codigo;
+	}
+
+	private String getRazonSocial() {
+		String razonSocial= null;
+		if(txtRazonSocialProveedor.getText().trim().length()==0) {
+			mensajeError("Ingresar RazonSocial");
+			txtRazonSocialProveedor.requestFocus();
+		}
+		else if (txtRazonSocialProveedor.getText().trim().matches(Validaciones.RazonSocial)) {
+			razonSocial=txtRazonSocialProveedor.getText().trim();
+		}else {
+			mensajeError("Formato incorrecto de RazonSocial, ingresar de 3 a 100 letras");
+			txtRazonSocialProveedor.setText("");
+			txtRazonSocialProveedor.requestFocus();
+		}
+		
+		return razonSocial;
+			
+		}
+	private int getRuc() {
+		int ruc= 0;
+		if(txtRucProveedores.getText().trim().length()==0) {
+			mensajeError("Ingresar Ruc");
+			txtRucProveedores.requestFocus();
+		}
+		else if (txtRucProveedores.getText().trim().matches(Validaciones.RUC)) {
+			ruc=Integer.parseInt(txtRucProveedores.getText().trim());
+		}else {
+			mensajeError("Formato incorrecto de ruc, ingresar 11 numeros");
+			txtRucProveedores.setText("");
+			txtRucProveedores.requestFocus();
+		}
+		return ruc;
+	}
+	
+
+	private int getTelefono() {
+		int telefono= 0;
+		if(txtTelefonoProveedor.getText().trim().length()==0) {
+			mensajeError("Ingresar Telefono");
+			txtTelefonoProveedor.requestFocus();
+		}
+		else if (txtTelefonoProveedor.getText().trim().matches(Validaciones.Telefono)) {
+			telefono=Integer.parseInt(txtTelefonoProveedor.getText().trim());
+		}else {
+			mensajeError("Formato incorrecto de telefono, ingresar 9 numeros");
+			txtTelefonoProveedor.setText("");
+			txtTelefonoProveedor.requestFocus();
+		}
+		return telefono;
+	}
+
+	private String getDireccion() {
+		String direccion= null;
+		if(txtDireccionProveedor.getText().trim().length()==0) {
+			mensajeError("Ingresar Direccion");
+			txtDireccionProveedor.requestFocus();
+		}
+		else if (txtDireccionProveedor.getText().trim().matches(Validaciones.Direccion)) {
+			direccion=txtDireccionProveedor.getText().trim();
+		}else {
+			mensajeError("Formato incorrecto de direccion, ingresar de 3 a 100 letras");
+			txtDireccionProveedor.setText("");
+			txtDireccionProveedor.requestFocus();
+		}
+		
+		return direccion;
+	}
+
+	private String getCorreo() {
+		String correo= null;
+		if(txtCorreoProveedor.getText().trim().length()==0) {
+			mensajeError("Ingresar correo");
+			txtCorreoProveedor.requestFocus();
+		}
+		else if (txtCorreoProveedor.getText().trim().matches(Validaciones.Correo)) {
+			correo=txtCorreoProveedor.getText().trim();
+		}else {
+			mensajeError("Formato incorrecto del correo");
+			txtCorreoProveedor.setText("");
+			txtCorreoProveedor.requestFocus();
+		}
+		
+		
+		return correo;
+	}
+
+	private void mensajeError(String msj) {
+		JOptionPane.showMessageDialog(this,msj,"Error",0);
+		//prueba de edicion de codigo
+		
+	}
+	
+	protected void actionPerformedBtnActualizarProveedor(ActionEvent e) {
+		actualizarProveedor();
+	}
+	
+	
+	private void actualizarProveedor() {
+		String razonSocial, direccion, correo;
+		int codigo,ruc, telefono;
+		
+		codigo = getCodigo();
+		razonSocial = getRazonSocial();
+		ruc = getRuc();
+		telefono = getTelefono();
+		direccion = getDireccion();
+		correo = getCorreo();
+		
+		if(codigo == 0 || razonSocial == null || ruc == 0 || telefono == -1 || direccion == 0 || correo == -1 {
+			return;
+		}else {
+		// crear un objeto del tipo productos
+		Productos p = new Productos();
+		
+		// Setear 
+		p.setDescripcion(desc);
+		p.setProveedores(idProve);
+		p.setStock(stock);
+		p.setPrecio(precio);
+		p.setIdCategoria(cate);
+		p.setEstadoProd(estado);
+		p.setIdProducto(idProd);
+		
+	}
+
+	protected void actionPerformedBtnNewButton(ActionEvent e) {
+		buscarDatosProveedores();	
+	}
+
+	private void buscarDatosProveedores() {
+		int codigo;
+		codigo = getCodigo();
+		if(codigo == -1) {
+			return;
+		}else {
+			Proveedores provee = gProvee.buscarProveedores(codigo);
+			if(provee == null) {
+				mensajeError("No existe el proveedor");
+			}else {
+				txtRazonSocialProveedor.setText(provee.getRazonSocial());
+				txtRucProveedores.setText(""+provee.getRuc());
+				txtDireccionProveedor.setText(provee.getDireccion());
+				txtCorreoProveedor.setText(provee.getCorreo());
+				txtTelefonoProveedor.setText(""+provee.getTelefono());
+				
+			}
+		}
+			
+	}
+	
+	
+	
+}
+

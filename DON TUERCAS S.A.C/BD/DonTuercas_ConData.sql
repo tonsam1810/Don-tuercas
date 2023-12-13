@@ -1,0 +1,343 @@
+CREATE DATABASE  IF NOT EXISTS `don_tuercas` /*!40100 DEFAULT CHARACTER SET utf8 */ /*!80016 DEFAULT ENCRYPTION='N' */;
+USE `don_tuercas`;
+-- MySQL dump 10.13  Distrib 8.0.22, for Win64 (x86_64)
+--
+-- Host: localhost    Database: don_tuercas
+-- ------------------------------------------------------
+-- Server version	8.0.22
+
+/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
+/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
+/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
+/*!50503 SET NAMES utf8 */;
+/*!40103 SET @OLD_TIME_ZONE=@@TIME_ZONE */;
+/*!40103 SET TIME_ZONE='+00:00' */;
+/*!40014 SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0 */;
+/*!40014 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0 */;
+/*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
+/*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
+
+--
+-- Table structure for table `tb_cargo`
+--
+
+DROP TABLE IF EXISTS `tb_cargo`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `tb_cargo` (
+  `id_cargo` int NOT NULL,
+  `nombCargo` varchar(45) DEFAULT NULL,
+  PRIMARY KEY (`id_cargo`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `tb_cargo`
+--
+
+LOCK TABLES `tb_cargo` WRITE;
+/*!40000 ALTER TABLE `tb_cargo` DISABLE KEYS */;
+INSERT INTO `tb_cargo` VALUES (1,'Vendedor'),(2,'Caja'),(3,'Almacen'),(4,'ADMI'),(5,'Supervisor');
+/*!40000 ALTER TABLE `tb_cargo` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `tb_categoria`
+--
+
+DROP TABLE IF EXISTS `tb_categoria`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `tb_categoria` (
+  `id_categoria` int NOT NULL,
+  `nomCategoria` varchar(45) DEFAULT NULL,
+  PRIMARY KEY (`id_categoria`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `tb_categoria`
+--
+
+LOCK TABLES `tb_categoria` WRITE;
+/*!40000 ALTER TABLE `tb_categoria` DISABLE KEYS */;
+INSERT INTO `tb_categoria` VALUES (1,'Equipamiento'),(2,'Cerrajería'),(3,'Fontanería'),(4,'Materiales Eléctricos'),(5,'Herramientas'),(6,'Industria'),(7,'Protección y Vestuario');
+/*!40000 ALTER TABLE `tb_categoria` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `tb_clientes`
+--
+
+DROP TABLE IF EXISTS `tb_clientes`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `tb_clientes` (
+  `id_clientes` int NOT NULL,
+  `raz_social` varchar(45) DEFAULT NULL,
+  `ruc` int DEFAULT NULL,
+  `telefono` int DEFAULT NULL,
+  `direccion` varchar(45) DEFAULT NULL,
+  `correo` varchar(45) DEFAULT NULL,
+  PRIMARY KEY (`id_clientes`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `tb_clientes`
+--
+
+LOCK TABLES `tb_clientes` WRITE;
+/*!40000 ALTER TABLE `tb_clientes` DISABLE KEYS */;
+INSERT INTO `tb_clientes` VALUES (1,'Socosani S.A.',2056487951,985467258,'Leonardo da Vinci, 7, 41092.','socosani@hotmail.com'),(2,'Pisopak Perú S.A.C.',2056488897,985462158,'Calle José Ortega y Gasset, 40 - loc.','pisopak@hotmail.com'),(3,'Concordia S.A.C.',2054879512,974635728,'Av. Primavera 120 Santiago de Surco','concordia@hotmail.com'),(4,'A & Ch Edificaciones S.A.',2054879451,927194314,'Av. Larco 743 Miraflores','edificacionesach@gmail.com'),(5,'A & J Inversiones S.A.C.',2015489753,912507712,'Av. Aviación 2501 San Borja - Lima','ajinversiones@hotmail.com'),(6,'Lindley S.A.C.',2046354638,974536472,'Av. Trujillo 123','lindley@gmail.com'),(7,'hdfghsfd',1234567890,987654321,'direccion','drfgedrger@gmail.com');
+/*!40000 ALTER TABLE `tb_clientes` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `tb_detallefactura`
+--
+
+DROP TABLE IF EXISTS `tb_detallefactura`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `tb_detallefactura` (
+  `id_detalleFactura` int NOT NULL,
+  `id_productos` int NOT NULL,
+  `cantidadPedidos` int DEFAULT NULL,
+  `precio_venta` double DEFAULT NULL,
+  `precio_total` double DEFAULT NULL,
+  PRIMARY KEY (`id_detalleFactura`),
+  KEY `fk_tb_detalleFactura_tb_productos1_idx` (`id_productos`),
+  CONSTRAINT `fk_tb_detalleFactura_tb_factura` FOREIGN KEY (`id_detalleFactura`) REFERENCES `tb_factura` (`id_factura`),
+  CONSTRAINT `fk_tb_detalleFactura_tb_productos1` FOREIGN KEY (`id_productos`) REFERENCES `tb_productos` (`id_productos`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `tb_detallefactura`
+--
+
+LOCK TABLES `tb_detallefactura` WRITE;
+/*!40000 ALTER TABLE `tb_detallefactura` DISABLE KEYS */;
+INSERT INTO `tb_detallefactura` VALUES (90001,15,2,99.9,199.8),(90002,1,4,7.1,28.1);
+/*!40000 ALTER TABLE `tb_detallefactura` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `tb_estadoprod`
+--
+
+DROP TABLE IF EXISTS `tb_estadoprod`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `tb_estadoprod` (
+  `id_estadoProd` int NOT NULL,
+  `descripcion` varchar(45) DEFAULT NULL,
+  PRIMARY KEY (`id_estadoProd`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `tb_estadoprod`
+--
+
+LOCK TABLES `tb_estadoprod` WRITE;
+/*!40000 ALTER TABLE `tb_estadoprod` DISABLE KEYS */;
+INSERT INTO `tb_estadoprod` VALUES (1,'Disponible'),(2,'Agotado'),(3,'Sin Compra'),(4,'Excluido');
+/*!40000 ALTER TABLE `tb_estadoprod` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `tb_factura`
+--
+
+DROP TABLE IF EXISTS `tb_factura`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `tb_factura` (
+  `id_factura` int NOT NULL,
+  `fecha` date DEFAULT NULL,
+  `id_clientes` int NOT NULL,
+  `id_usuario` int DEFAULT NULL,
+  `total_factura` double DEFAULT NULL,
+  PRIMARY KEY (`id_factura`,`id_clientes`),
+  KEY `fk_tb_factura_tb_clientes1_idx` (`id_clientes`),
+  KEY `fk_tb_factura_tb_usuarios_idx` (`id_usuario`),
+  CONSTRAINT `fk_tb_factura_tb_clientes1` FOREIGN KEY (`id_clientes`) REFERENCES `tb_clientes` (`id_clientes`),
+  CONSTRAINT `fk_tb_factura_tb_usuarios` FOREIGN KEY (`id_usuario`) REFERENCES `tb_usuarios` (`id_usuarios`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `tb_factura`
+--
+
+LOCK TABLES `tb_factura` WRITE;
+/*!40000 ALTER TABLE `tb_factura` DISABLE KEYS */;
+INSERT INTO `tb_factura` VALUES (90001,'2022-11-24',3,9001,780.5),(90002,'2018-11-24',2,9001,500.8);
+/*!40000 ALTER TABLE `tb_factura` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `tb_productos`
+--
+
+DROP TABLE IF EXISTS `tb_productos`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `tb_productos` (
+  `id_productos` int NOT NULL,
+  `descripcion` varchar(45) DEFAULT NULL,
+  `id_proveedores` int NOT NULL,
+  `stock` int DEFAULT NULL,
+  `precio` double DEFAULT NULL,
+  `id_categoria` int NOT NULL,
+  `id_estadoProd` int NOT NULL,
+  PRIMARY KEY (`id_productos`,`id_proveedores`,`id_categoria`,`id_estadoProd`),
+  KEY `fk_tb_productos_tb_estadoProd_idx` (`id_estadoProd`),
+  KEY `fk_tb_productos_tb_categoria1_idx` (`id_categoria`),
+  KEY `fk_tb_productos_tb_proveedores1_idx` (`id_proveedores`),
+  CONSTRAINT `fk_tb_productos_tb_categoria1` FOREIGN KEY (`id_categoria`) REFERENCES `tb_categoria` (`id_categoria`),
+  CONSTRAINT `fk_tb_productos_tb_estadoProd` FOREIGN KEY (`id_estadoProd`) REFERENCES `tb_estadoprod` (`id_estadoProd`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `fk_tb_productos_tb_proveedores1` FOREIGN KEY (`id_proveedores`) REFERENCES `tb_proveedores` (`id_proveedores`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `tb_productos`
+--
+
+LOCK TABLES `tb_productos` WRITE;
+/*!40000 ALTER TABLE `tb_productos` DISABLE KEYS */;
+INSERT INTO `tb_productos` VALUES (1,'Cinta Aislante 18m Temflex Verde',3,100,7.1,1,1),(2,'Bisagra Cangrejo 110° Interior X 2',6,47,8,2,1),(3,'Amoladora 4 1/2\" 840W 9557HPG',7,48,450,5,1),(4,'Guante Multiuso T8',3,68,15.8,7,1),(5,'Pistola de Succión Clasix Sagola',4,12,164.9,1,1),(6,'Sapolio Auto Silicona 360ml Sapolio',1,37,22,1,1),(7,'Cerraduras Pomo Tabular Acero',6,12,24.9,2,1),(8,'Cargador Rapido 18V LXT - DC18RC',7,24,205,4,1),(9,'Tubo Alcantarillado 110mm UFX6MO Plastica',5,288,65.9,3,1),(10,'Tuberia Cobre Rigida Tipo \"L\" 3/4 X 6MT',5,23,340.6,3,1),(11,'Electrobomba Periferica 0.5HP Werken',2,12,125,4,1),(12,'Cepillo de Acero - 6 Hileras',2,8,13.9,5,1),(13,'Cemento Blanco Bolsa 1Kg Sika',5,80,6,6,1),(14,'Estribos Fierro Corrugado 6mm 18X15cm',2,170,21.5,6,1),(15,'Calzado de Seguridad Warrior PPA T41',3,15,99.9,7,1),(16,'Conectores Super Tan T/R 3m',3,1,37.8,4,2),(17,'Candado Combinación Yale Gris YP1',4,1,20.9,2,3),(18,'Ambientador P/Auto Sapolio Hawaii',1,1,14.9,1,4),(19,'Taladro 840W	',7,15,440,4,1),(20,'Cinta Metrica',3,40,12.9,1,1);
+/*!40000 ALTER TABLE `tb_productos` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `tb_proveedores`
+--
+
+DROP TABLE IF EXISTS `tb_proveedores`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `tb_proveedores` (
+  `id_proveedores` int NOT NULL,
+  `raz_social` varchar(45) DEFAULT NULL,
+  `ruc` int DEFAULT NULL,
+  `telefono` int DEFAULT NULL,
+  `direccion` varchar(45) DEFAULT NULL,
+  `correo` varchar(45) DEFAULT NULL,
+  PRIMARY KEY (`id_proveedores`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `tb_proveedores`
+--
+
+LOCK TABLES `tb_proveedores` WRITE;
+/*!40000 ALTER TABLE `tb_proveedores` DISABLE KEYS */;
+INSERT INTO `tb_proveedores` VALUES (1,'ALICORP S.A.A.',2010005523,957975903,'Avenida Argentina, 4793, Cercado Callao','atencionconsumidor@alicorp.com.pe'),(2,'ATLAS S.A.',2010072042,983610310,'Car Central KM. 40.5 Sec. Chosica','grupoatlas@hotmail.com.pe'),(3,'3M PERU S.A.',2010011922,962242728,'Av.Canaval y Moreyra 641, San I, Lima.','3mperu@hotmail.com.pe'),(4,'DEBRON S.A.',2026851483,944258776,'Germán Carrasco, 2110 - Lima','atencioncliente@debron.com.pe'),(5,'SIKA PERU S.A.C.',2025430506,916186060,'Av. Industrial El Lúcumo, Mz B Lote 6','sikaperu@hotmail.com'),(6,'ZENDER S.A.C.',2056487945,948756661,'Alameda Marqués Chorrillos, Lima 15067','zender@zender.com.pe'),(7,'MAKITA PERU S.A.',2051510054,927131212,'Km 29, 1S, Lurín','makitaperu@hotmail.com'),(8,'ACEROS AREQUIPA S.A.C.',2047864735,986374567,'Av. Perú 123','acerosarequipa@hotmail.com');
+/*!40000 ALTER TABLE `tb_proveedores` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `tb_usuarios`
+--
+
+DROP TABLE IF EXISTS `tb_usuarios`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `tb_usuarios` (
+  `id_usuarios` int NOT NULL,
+  `nombre` varchar(45) DEFAULT NULL,
+  `apellido` varchar(45) DEFAULT NULL,
+  `usuario` char(6) DEFAULT NULL,
+  `clave` char(6) DEFAULT NULL,
+  `dni` int DEFAULT NULL,
+  `id_cargo` int NOT NULL,
+  PRIMARY KEY (`id_usuarios`,`id_cargo`),
+  KEY `fk_tb_usuarios_tb_cargo1_idx` (`id_cargo`),
+  CONSTRAINT `fk_tb_usuarios_tb_cargo1` FOREIGN KEY (`id_cargo`) REFERENCES `tb_cargo` (`id_cargo`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `tb_usuarios`
+--
+
+LOCK TABLES `tb_usuarios` WRITE;
+/*!40000 ALTER TABLE `tb_usuarios` DISABLE KEYS */;
+INSERT INTO `tb_usuarios` VALUES (9001,'Ethan','Velásquez','EV018','2idniv',78945623,1),(9002,'Grecia','Pashanasi','GP047','21ejec',70548966,2),(9003,'Diana','Vega','DV018','2nomde',89457824,4),(9004,'Paolo','Pineda','PP047','2cemle',80567944,3),(9005,'Luisa','Navarrete','LN026','2ripas',78459133,5),(9006,'Juan','Vega','JV736','3EDNEV',12548853,1);
+/*!40000 ALTER TABLE `tb_usuarios` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Dumping events for database 'don_tuercas'
+--
+
+--
+-- Dumping routines for database 'don_tuercas'
+--
+/*!50003 DROP PROCEDURE IF EXISTS `sp_buscarClientes` */;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = utf8mb4 */ ;
+/*!50003 SET character_set_results = utf8mb4 */ ;
+/*!50003 SET collation_connection  = utf8mb4_0900_ai_ci */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = 'STRICT_TRANS_TABLES,NO_ENGINE_SUBSTITUTION' */ ;
+DELIMITER ;;
+CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_buscarClientes`(xRazSocial varchar(45))
+select * from tb_clientes where raz_social like concat(xRazSocial, '%') ;;
+DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
+/*!50003 DROP PROCEDURE IF EXISTS `sp_buscarProductos` */;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = utf8mb4 */ ;
+/*!50003 SET character_set_results = utf8mb4 */ ;
+/*!50003 SET collation_connection  = utf8mb4_0900_ai_ci */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = 'STRICT_TRANS_TABLES,NO_ENGINE_SUBSTITUTION' */ ;
+DELIMITER ;;
+CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_buscarProductos`(xnombreProd varchar(45))
+select * from tb_productos where descripcion like concat(xnombreProd, '%') ;;
+DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
+/*!50003 DROP PROCEDURE IF EXISTS `validarAcceso` */;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = utf8mb4 */ ;
+/*!50003 SET character_set_results = utf8mb4 */ ;
+/*!50003 SET collation_connection  = utf8mb4_0900_ai_ci */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = 'STRICT_TRANS_TABLES,NO_ENGINE_SUBSTITUTION' */ ;
+DELIMITER ;;
+CREATE DEFINER=`root`@`localhost` PROCEDURE `validarAcceso`(usr char(6), pass char(6))
+select * from tb_usuarios where usuario = usr and clave = pass ;;
+DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
+/*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
+
+/*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
+/*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;
+/*!40014 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS */;
+/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
+/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
+/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
+/*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
+
+-- Dump completed on 2022-04-08 22:59:44

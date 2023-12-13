@@ -1,0 +1,214 @@
+package vista;
+
+import java.awt.Desktop;
+import java.awt.EventQueue;
+import java.awt.Font;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.util.ArrayList;
+
+import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.JInternalFrame;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTable;
+import javax.swing.border.EmptyBorder;
+import javax.swing.table.DefaultTableModel;
+
+import com.itextpdf.text.BaseColor;
+import com.itextpdf.text.Chunk;
+import com.itextpdf.text.Document;
+import com.itextpdf.text.FontFactory;
+import com.itextpdf.text.Paragraph;
+import com.itextpdf.text.pdf.PdfPTable;
+import com.itextpdf.text.pdf.PdfWriter;
+
+import entidad.Productos;
+import mantenimiento.GestionProductoDAO;
+
+public class FrmLstProductos extends JInternalFrame implements ActionListener {
+
+	private JPanel contentPane;
+	private JLabel lblListado;
+	private JTable tblProductos;
+	private JButton btnListado;
+	private JButton btnPdf;
+	private JScrollPane scrollPane;
+
+	
+	// Instanciar objeto para definir el modelo de la tabla
+	DefaultTableModel model = new DefaultTableModel();
+	
+	//
+	GestionProductoDAO gProd = new GestionProductoDAO();
+	
+	
+	/**
+	 * Launch the application.
+	 */
+	public static void main(String[] args) {
+		EventQueue.invokeLater(new Runnable() {
+			public void run() {
+				try {
+					FrmLstProductos frame = new FrmLstProductos();
+					frame.setVisible(true);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+		});
+	}
+
+	/**
+	 * Create the frame.
+	 */
+	public FrmLstProductos() {
+		setClosable(true);
+		setIconifiable(true);
+		setTitle("DON TUERCAS S.A.C.  -  Productos");
+		setBounds(100, 100, 576, 370);
+		contentPane = new JPanel();
+		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
+		setContentPane(contentPane);
+		contentPane.setLayout(null);
+		
+		lblListado = new JLabel("Listado de Productos");
+		lblListado.setFont(new Font("Comic Sans MS", Font.PLAIN, 16));
+		lblListado.setBounds(10, 22, 161, 17);
+		contentPane.add(lblListado);
+		
+		scrollPane = new JScrollPane();
+		scrollPane.setBounds(10, 48, 542, 236);
+		contentPane.add(scrollPane);
+		
+		tblProductos = new JTable();
+		tblProductos.setFillsViewportHeight(true);
+		scrollPane.setViewportView(tblProductos);
+		
+		btnListado = new JButton("Listado");
+		btnListado.addActionListener(this);
+		btnListado.setBounds(372, 303, 85, 21);
+		contentPane.add(btnListado);
+		
+		btnPdf = new JButton("PDF");
+		btnPdf.addActionListener(this);
+		btnPdf.setBounds(467, 303, 85, 21);
+		contentPane.add(btnPdf);
+		
+		// Determinar columnas
+		model.addColumn("Código");
+		model.addColumn("Descripción");
+		model.addColumn("Stock");
+		model.addColumn("Precio");
+		model.addColumn("Cod. Categoria");
+		
+		// Asignar
+		tblProductos.setModel(model);
+		
+		
+	}
+
+	public void actionPerformed(ActionEvent e) {
+		if (e.getSource() == btnPdf) {
+			actionPerformedBtnPdf(e);
+		}
+		if (e.getSource() == btnListado) {
+			actionPerformedBtnListado(e);
+		}
+	}
+	protected void actionPerformedBtnListado(ActionEvent e) {
+		listado();
+	}
+
+	private void listado() {
+		// Limpiar la tabla
+		model.setRowCount(0);
+		
+		// Llamar al metodo
+		ArrayList<Productos> listarProd = gProd.listarProductos();
+		
+		for (Productos p : listarProd) {
+			Object fila [] = {p.getIdProducto(),
+							  p.getDescripcion(),
+							  p.getStock(),
+							  p.getPrecio(),
+							  p.getIdCategoria()
+			};
+			model.addRow(fila);
+		}
+		
+	}
+	protected void actionPerformedBtnPdf(ActionEvent e) {
+		imprimePDF();
+	}
+
+	private void imprimePDF() {
+		// paso 1: Asignar nombre al archivo PDF -- Ruta
+		String nomArchivo = "reportes/listadoProductos.pdf";
+		try {
+			// paso 2: Crear una pantilla para agregar los componentes del archivo PDF
+			Document plantilla= new Document();
+					
+			// paso 3: Crear el archivo PDF
+			FileOutputStream fos = new FileOutputStream(nomArchivo);
+					
+			// paso 4: Relacionar la plantilla con el archivo PDF
+			PdfWriter pdfWrt = PdfWriter.getInstance(plantilla, fos);
+					
+			// paso 5: plantilla a modo de escritura
+			plantilla.open();
+					
+			// paso 6: Agregar componentes a la plantilla
+			// Agregar titulo
+			Paragraph p = new Paragraph("Listado de Productos",FontFactory.getFont("Comic Sans MS", 16, Font.BOLD,BaseColor.GREEN));
+			p.setAlignment(Chunk.ALIGN_CENTER);
+			plantilla.add(p);
+					
+			// Agregar un espacio
+			p = new Paragraph(" ");			
+			plantilla.add(p);
+					
+			// Mostrar lista
+			ArrayList<Productos> lista = gProd.listarProductos();
+					
+			// Valida
+			if(lista.size() == 0) {
+				p = new Paragraph("lista vacía", FontFactory.getFont("Comic Sans MS", 14, Font.ITALIC, BaseColor.GRAY));
+				p.setAlignment(Chunk.ALIGN_CENTER);
+				plantilla.add(p);
+			}else {
+				// Crear tabla
+				PdfPTable tabla = new PdfPTable(5);
+						
+				// Agregar las columnas
+				tabla.addCell("Código");
+				tabla.addCell("Descripción");
+				tabla.addCell("Stock");
+				tabla.addCell("Precio");
+				tabla.addCell("Categoria");
+				for (Productos pro : lista) {
+					tabla.addCell(pro.getIdProducto()+"");
+					tabla.addCell(pro.getDescripcion());
+					tabla.addCell(pro.getStock()+"");
+					tabla.addCell(pro.getPrecio()+"");
+					tabla.addCell(pro.getIdCategoria()+"");
+				}
+				plantilla.add(tabla);				
+			}		
+								
+			// Cerrar la plantilla
+			plantilla.close();
+					
+			// Abrir desde el navegador
+			Desktop.getDesktop().open(new File(nomArchivo));
+					
+		} catch (Exception e) {
+			System.out.println("Error al crear archivo PDF "+e.getMessage());
+		}
+		
+	}
+}

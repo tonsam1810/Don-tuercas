@@ -1,0 +1,66 @@
+package entidad;
+
+public class proveedores {
+	//atributos privados
+		private int codigo;
+		private String razonSocial;
+		private int ruc;
+		private int telefono;
+		private String direccion;
+		private String correo;
+		//constructor
+		public proveedores() {
+		
+			
+		}
+		public proveedores(int codigo, String razonSocial, int ruc, int telefono, String direccion, String correo) {
+			super();
+			this.codigo = codigo;
+			this.razonSocial = razonSocial;
+			this.ruc = ruc;
+			this.telefono = telefono;
+			this.direccion = direccion;
+			this.correo = correo;
+		}
+		//metodos de acceso GET/SET
+		public int getCodigo() {
+			return codigo;
+		}
+		public void setCodigo(int codigo) {
+			this.codigo = codigo;
+		}
+		public String getRazonSocial() {
+			return razonSocial;
+		}
+		public void setRazonSocial(String razonSocial) {
+			this.razonSocial = razonSocial;
+		}
+		public int getRuc() {
+			return ruc;
+		}
+		public void setRuc(int ruc) {
+			this.ruc = ruc;
+		}
+		public int getTelefono() {
+			return telefono;
+		}
+		public void setTelefono(int telefono) {
+			this.telefono = telefono;
+		}
+		public String getDireccion() {
+			return direccion;
+		}
+		public void setDireccion(String direccion) {
+			this.direccion = direccion;
+		}
+		public String getCorreo() {
+			return correo;
+		}
+		public void setCorreo(String correo) {
+			this.correo = correo;
+		}
+		
+		
+		
+		
+}

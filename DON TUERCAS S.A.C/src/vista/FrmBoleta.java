@@ -1,0 +1,495 @@
+package vista;
+
+import java.awt.Color;
+import java.awt.Cursor;
+import java.awt.EventQueue;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+
+import javax.swing.ImageIcon;
+import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.JInternalFrame;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JTextArea;
+import javax.swing.JTextField;
+import javax.swing.UIManager;
+import javax.swing.border.EmptyBorder;
+import javax.swing.border.LineBorder;
+import javax.swing.border.TitledBorder;
+import javax.swing.table.DefaultTableModel;
+
+import com.itextpdf.text.pdf.PdfStructTreeController.returnType;
+
+import entidad.DetalleFactura;
+import entidad.Factura;
+import mantenimiento.GestionVentasDAO;
+
+import javax.swing.JTable;
+import javax.swing.JScrollPane;
+
+public class FrmBoleta extends JInternalFrame implements ActionListener {
+
+	private JPanel contentPane;
+	
+	public static JTextField txtCodCliente;
+	public static JTextField txtRazSocial;
+	public static JTextField txtTelfCliente;
+	private JTextField txtFechaActual;
+	private JButton btnNuevo;
+	private JButton btnFinalizar;
+	private JTextField txtTotal;
+	private JTextField txtNumFactura;
+	private JPanel panel_1;
+	private JPanel panel_2;
+	private JLabel lblProducto;
+	public static JTextField txtCodProducto;
+	public static JTextField txtDesProducto;
+	public static JTextField txtPreProducto;
+	public static JTextField txtStockProducto;
+	private JTextField txtCantidadAComprar;
+	private JButton btnAgregar;
+	private JLabel lblCantidad;
+	private JButton btnConsultarProducto;
+	private JLabel lblRazSocial;
+	private JLabel lblTelefono;
+	private JTable tblVentas;
+	private JScrollPane scrollPane;
+	
+
+	// Instanciar objeto para definir la estructura de la tabla
+	DefaultTableModel model = new DefaultTableModel();
+	
+	
+	//
+	GestionVentasDAO gVent = new GestionVentasDAO();
+	
+	//
+	double impTot;
+	
+	// Arreglo para guardar los productos en el carrito de compras
+	ArrayList<DetalleFactura> carrito = new ArrayList<DetalleFactura>();
+
+	/**
+	 * Launch the application.
+	 */
+	public static void main(String[] args) {
+		EventQueue.invokeLater(new Runnable() {
+			public void run() {
+				try {
+					FrmBoleta frame = new FrmBoleta();
+					frame.setVisible(true);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+		});
+	}
+
+	/**
+	 * Create the frame.
+	 */
+	public FrmBoleta() {
+		setClosable(true);
+		setIconifiable(true);
+		setResizable(false);
+		setTitle("DON TUERCAS S.A.C. - Boleta");
+		setBounds(100, 100, 711, 462);
+		contentPane = new JPanel();
+		contentPane.setOpaque(false);
+		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
+		setContentPane(contentPane);
+		contentPane.setLayout(null);
+		
+		btnNuevo = new JButton("Nuevo");
+		btnNuevo.addActionListener(this);
+		btnNuevo.setBounds(23, 387, 89, 23);
+		contentPane.add(btnNuevo);
+		
+		btnFinalizar = new JButton("Finalizar Compra");		
+		btnFinalizar.addActionListener(this);
+		btnFinalizar.setBounds(137, 387, 144, 23);
+		contentPane.add(btnFinalizar);
+		
+		txtTotal = new JTextField();
+		txtTotal.setEditable(false);
+		txtTotal.setBounds(511, 375, 179, 20);
+		contentPane.add(txtTotal);
+		txtTotal.setColumns(10);
+		
+		JLabel lblTotal = new JLabel("Total");
+		lblTotal.setBounds(455, 377, 46, 14);
+		contentPane.add(lblTotal);
+		
+		JPanel panel = new JPanel();
+		panel.setBorder(new LineBorder(new Color(0, 0, 0)));
+		panel.setBounds(429, 10, 261, 105);
+		contentPane.add(panel);
+		panel.setLayout(null);
+		
+		JLabel lblFecha_1 = new JLabel("Fecha:");
+		lblFecha_1.setBounds(10, 56, 48, 14);
+		panel.add(lblFecha_1);
+		
+		txtFechaActual = new JTextField();
+		txtFechaActual.setEditable(false);
+		txtFechaActual.setText("A\u00F1o/Mes/D\u00EDa");
+		txtFechaActual.setBounds(68, 53, 97, 20);
+		panel.add(txtFechaActual);
+		txtFechaActual.setColumns(10);
+		
+		JLabel lblNm = new JLabel("N\u00FAm");
+		lblNm.setBounds(10, 14, 33, 14);
+		panel.add(lblNm);
+		
+		txtNumFactura = new JTextField();
+		txtNumFactura.setEditable(false);
+		txtNumFactura.setColumns(10);
+		txtNumFactura.setBounds(68, 11, 162, 20);
+		panel.add(txtNumFactura);
+		
+		panel_1 = new JPanel();
+		panel_1.setBorder(new TitledBorder(null, "Datos del Cliente", TitledBorder.LEADING, TitledBorder.TOP, null, null));
+		panel_1.setBounds(10, 10, 365, 120);
+		contentPane.add(panel_1);
+		panel_1.setLayout(null);
+		
+		JLabel lblCliente = new JLabel("Cliente:");
+		lblCliente.setBounds(10, 21, 70, 25);
+		panel_1.add(lblCliente);
+		
+		txtCodCliente = new JTextField();
+		txtCodCliente.setEditable(false);
+		txtCodCliente.setBounds(93, 24, 97, 20);
+		panel_1.add(txtCodCliente);
+		txtCodCliente.setColumns(10);
+		
+		txtRazSocial = new JTextField();
+		txtRazSocial.setEditable(false);
+		txtRazSocial.setBounds(93, 54, 203, 20);
+		panel_1.add(txtRazSocial);
+		txtRazSocial.setColumns(10);
+		
+		JButton btnConsultarCliente = new JButton("");
+		btnConsultarCliente.setBounds(200, 9, 37, 37);
+		panel_1.add(btnConsultarCliente);
+		btnConsultarCliente.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				DlgCliente d = new DlgCliente();
+				d.setVisible(true);
+			}
+		});
+		btnConsultarCliente.setBorder(null);
+		btnConsultarCliente.setBorderPainted(false);
+		btnConsultarCliente.setContentAreaFilled(false);
+		btnConsultarCliente.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));		
+		btnConsultarCliente.setIcon(new ImageIcon(FrmBoleta.class.getResource("/img/34229_find_magnifier_search_zoom_icon.png")));
+		
+		lblRazSocial = new JLabel("Raz. Social");
+		lblRazSocial.setBounds(10, 57, 70, 13);
+		panel_1.add(lblRazSocial);
+		
+		lblTelefono = new JLabel("Teléfono:");
+		lblTelefono.setBounds(10, 87, 45, 13);
+		panel_1.add(lblTelefono);
+		
+		txtTelfCliente = new JTextField();
+		txtTelfCliente.setEditable(false);
+		txtTelfCliente.setColumns(10);
+		txtTelfCliente.setBounds(93, 84, 135, 20);
+		panel_1.add(txtTelfCliente);
+		
+		panel_2 = new JPanel();
+		panel_2.setLayout(null);
+		panel_2.setBorder(new TitledBorder(UIManager.getBorder("TitledBorder.border"), "Datos del Producto", TitledBorder.LEADING, TitledBorder.TOP, null, new Color(0, 0, 0)));
+		panel_2.setBounds(10, 141, 680, 96);
+		contentPane.add(panel_2);
+		
+		lblProducto = new JLabel("Producto:");
+		lblProducto.setBounds(10, 21, 70, 25);
+		panel_2.add(lblProducto);
+		
+		txtCodProducto = new JTextField();
+		txtCodProducto.setEditable(false);
+		txtCodProducto.setColumns(10);
+		txtCodProducto.setBounds(87, 23, 86, 20);
+		panel_2.add(txtCodProducto);
+		
+		txtCantidadAComprar = new JTextField();
+		txtCantidadAComprar.setColumns(10);
+		txtCantidadAComprar.setBounds(87, 54, 86, 20);
+		panel_2.add(txtCantidadAComprar);
+		
+		btnAgregar = new JButton("");
+		btnAgregar.addActionListener(this);
+		btnAgregar.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+		btnAgregar.setRolloverIcon(new ImageIcon(FrmBoleta.class.getResource("/img/cartph.png")));
+		btnAgregar.setIcon(new ImageIcon(FrmBoleta.class.getResource("/img/cartp.png")));
+		btnAgregar.setContentAreaFilled(false);
+		btnAgregar.setBorderPainted(false);
+		btnAgregar.setBorder(null);
+		btnAgregar.setBounds(183, 48, 37, 37);
+		panel_2.add(btnAgregar);
+		
+		lblCantidad = new JLabel("Cantidad:");
+		lblCantidad.setBounds(10, 57, 70, 14);
+		panel_2.add(lblCantidad);
+		
+		btnConsultarProducto = new JButton("");
+		btnConsultarProducto.addActionListener(this);
+		btnConsultarProducto.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));		
+		btnConsultarProducto.setIcon(new ImageIcon(FrmBoleta.class.getResource("/img/34229_find_magnifier_search_zoom_icon.png")));
+		btnConsultarProducto.setContentAreaFilled(false);
+		btnConsultarProducto.setBorderPainted(false);
+		btnConsultarProducto.setBorder(null);
+		btnConsultarProducto.setBounds(183, 9, 37, 37);
+		panel_2.add(btnConsultarProducto);
+		
+		txtDesProducto = new JTextField();
+		txtDesProducto.setEditable(false);
+		txtDesProducto.setColumns(10);
+		txtDesProducto.setBounds(235, 23, 265, 20);
+		panel_2.add(txtDesProducto);
+		
+		txtPreProducto = new JTextField();
+		txtPreProducto.setEditable(false);
+		txtPreProducto.setColumns(10);
+		txtPreProducto.setBounds(510, 24, 70, 20);
+		panel_2.add(txtPreProducto);
+		
+		txtStockProducto = new JTextField();
+		txtStockProducto.setEditable(false);
+		txtStockProducto.setColumns(10);
+		txtStockProducto.setBounds(590, 24, 70, 20);
+		panel_2.add(txtStockProducto);
+		
+		JLabel lblAgregarProducto = new JLabel("Agregar producto ");
+		lblAgregarProducto.setBounds(230, 57, 148, 14);
+		panel_2.add(lblAgregarProducto);
+		
+		scrollPane = new JScrollPane();
+		scrollPane.setBounds(10, 250, 679, 120);
+		contentPane.add(scrollPane);
+		
+		tblVentas = new JTable();
+		tblVentas.setFillsViewportHeight(true);
+		scrollPane.setViewportView(tblVentas);
+		
+		// Agregar columnas
+		model.addColumn("Código");
+		model.addColumn("Producto");
+		model.addColumn("Cantidad");
+		model.addColumn("Precio");
+		model.addColumn("Importe");
+		
+		// 
+		tblVentas.setModel(model);
+		
+		// Mostrar fecha
+		txtFechaActual.setText(obtenerFecha());
+		
+		// Mostrar número de factura
+		txtNumFactura.setText(""+generarNumFactura());
+		
+		
+	}
+
+	
+	private int generarNumFactura() {
+		return gVent.generarNumeroFactura();
+	}
+	private int obtenerCodVendedor() {
+		// TODO Auto-generated method stub
+		return Logueo.u.getCodigo();
+	}
+
+	private int leerCodCliente() {
+		// TODO Auto-generated method stub
+		return Integer.parseInt(txtCodCliente.getText());
+	}
+
+	private int obtenerNumFactura() {		
+		// TODO Auto-generated method stub
+		return generarNumFactura();
+	}
+
+	private String obtenerFecha() {
+		// Obtener la fecha del sistema
+		return new SimpleDateFormat("yyyy/MM/dd").format(new Date());
+	}
+
+	/*private int leerCantidad() {
+		int cant = -1;
+		if(txtCantidadAComprar.getText().trim().length() == 0) {
+			mensajeError("Ingrese la cantidad de productos");
+			txtCantidadAComprar.requestFocus();
+		}else {
+			try {
+				cant = Integer.parseInt(txtCantidadAComprar.getText());
+				// Validar valores menores o iguales a 0
+				if(cant <= 0) {
+					mensajeError("Ingrese valores númericos mayores a 0");
+					txtCantidadAComprar.setText("");
+					txtCantidadAComprar.requestFocus();
+					cant = -1;
+				} // Validar que solo se ingresen valores con formato numerico				
+			} catch (NumberFormatException e) {
+				mensajeError("Ingrese solo valores númericos");
+				txtCantidadAComprar.setText("");
+				txtCantidadAComprar.requestFocus();
+			}
+		}
+		
+		return cant;
+	}*/
+	
+	
+	private int leerCantidad() {
+		return Integer.parseInt(txtCantidadAComprar.getText());
+	}
+
+	private int leerStock() {
+		// TODO Auto-generated method stub
+		return Integer.parseInt(txtStockProducto.getText());
+	}
+
+	private double leerPrecio() {
+		// TODO Auto-generated method stub
+		return Double.parseDouble(txtPreProducto.getText());
+	}
+
+	private String leerNomProd() {
+		// TODO Auto-generated method stub
+		return txtDesProducto.getText();
+	}
+
+	private int leerCodProd() {
+		// TODO Auto-generated method stub
+		return Integer.parseInt( txtCodProducto.getText());
+	}
+	
+	private String leerTelfCliente() {
+		// TODO Auto-generated method stub
+		return txtTelfCliente.getText();
+	}
+	
+	public void actionPerformed(ActionEvent e) {
+		if (e.getSource() == btnNuevo) {
+			actionPerformedBtnNuevo(e);
+		}
+		if (e.getSource() == btnFinalizar) {
+			actionPerformedBtnFinalizar(e);
+		}
+		if (e.getSource() == btnAgregar) {
+			actionPerformedBtnAgregar(e);
+		}
+		if (e.getSource() == btnConsultarProducto) {
+			actionPerformedBtnConsultarProducto(e);
+		}
+	}
+	protected void actionPerformedBtnConsultarProducto(ActionEvent e) {
+		DlgProducto p = new DlgProducto();
+		p.setVisible(true);
+	}
+	protected void actionPerformedBtnAgregar(ActionEvent e) {
+		agregarProducto();
+	}
+
+	private void agregarProducto() {
+		
+		int cant, stock, idProd;
+		double precio, importe;
+		String prod;
+		
+		// Obtener datos
+		idProd = leerCodProd();
+		prod = leerNomProd();
+		cant = leerCantidad();
+		precio = leerPrecio();
+		stock = leerStock();
+		importe = calcImporteCompra(precio, cant);
+		impTot += importe;
+		
+		// Validar Stock
+		if(cant > stock) {
+			mensajeError("Stock Insuficiente");
+			return;
+		}
+		
+		// Mostrar
+		Object fila [] = {idProd, prod, cant, precio, importe};
+		model.addRow(fila);
+		txtTotal.setText("S/.     "+impTot);
+		
+		// Agregar los datos a la clase detalleFactura
+		DetalleFactura d = new DetalleFactura(0, idProd, cant, precio, importe);
+		carrito.add(d);
+		// Prueba
+		System.out.println("Registros : "+carrito.size());
+	}
+
+	private void mensajeError(String msj) {
+		JOptionPane.showMessageDialog(this, msj, "Error", 0);
+		
+	}
+
+	private double calcImporteCompra(double precio, int cant) {
+		
+		return precio * cant;
+	}
+
+	
+	protected void actionPerformedBtnFinalizar(ActionEvent e) {
+		finalizarCompra();
+	}
+
+	private void finalizarCompra() {
+		String fecha;
+		int idCli, idVend, idFac;
+		double total;
+		
+		// Obtener los datos 
+		idFac = obtenerNumFactura();
+		fecha = obtenerFecha();
+		idCli = leerCodCliente();
+		idVend = obtenerCodVendedor();
+		total = impTot;
+		
+		// Instanciar objeto de la clase "DetalleFactura"
+		Factura fac = new Factura(idFac, fecha, idCli, idVend, total);
+		
+		//Llamar al proceso de la transaccion
+		int ok = gVent.realizarVenta(fac, carrito);
+		// Validar el resultado de la venta
+		if(ok == 0) {
+			mensajeError("Error en la Venta");
+		}else {
+			mensajeExito("Venta Exitosa");
+		}
+		
+	}
+
+	private void mensajeExito(String msj) {
+		JOptionPane.showMessageDialog(this, msj, "Sitema", 1);
+	}
+	
+	
+	protected void actionPerformedBtnNuevo(ActionEvent e) {
+		txtCodCliente.setText("");
+		txtRazSocial.setText("");
+		txtCodProducto.setText("");
+		txtDesProducto.setText("");
+		txtStockProducto.setText("");
+		txtTotal.setText("");
+		
+		//
+		model.setRowCount(0);
+		// 
+		txtNumFactura.setText(""+generarNumFactura());
+	}
+}

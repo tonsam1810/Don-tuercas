@@ -1,0 +1,345 @@
+package vista;
+
+import java.awt.EventQueue;
+import java.awt.Font;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+
+import javax.swing.ImageIcon;
+import javax.swing.JButton;
+import javax.swing.JInternalFrame;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JTextField;
+import javax.swing.SwingConstants;
+import javax.swing.table.DefaultTableModel;
+
+import entidad.Proveedores;
+import mantenimiento.GestionProveedoresDAO;
+import utils.Validaciones;
+import java.awt.Color;
+import java.awt.SystemColor;
+import javax.swing.JTable;
+import javax.swing.JScrollPane;
+
+public class FrmProveedore extends JInternalFrame implements ActionListener {
+	private JLabel lblCodigo;
+	private JLabel lblRazSocial;
+	private JLabel lblTelefono;
+	private JLabel lblDireccion;
+	private JLabel lblCorreo;
+	private JTextField txtCorreoProveedor;
+	private JTextField txtDireccionProveedor;
+	private JTextField txtTelefonoProveedor;
+	private JTextField txtRazonSocialProveedor;
+	private JTextField txtCodigoProveedor;
+	private JLabel lblMantenimientoDeProveedores;
+	private JLabel lblRuc;
+	private JTextField txtRucProveedores;
+	private JButton btnBuscar;
+	private JButton btnNuevo;
+	private JButton btnGuardar;
+	private JButton btnActualizar;
+	private JButton btnEliminar;
+	private JTable tblProveedores;
+	private JScrollPane scrollPane;
+
+	// Instanciar objeto "gProvee" para acceder a los metodos CRUD
+		GestionProveedoresDAO gProvee = new GestionProveedoresDAO();
+		
+	// Instanciar objeto para la tabla
+		DefaultTableModel model = new DefaultTableModel();
+	/**
+	 * Launch the application.
+	 */
+	public static void main(String[] args) {
+		EventQueue.invokeLater(new Runnable() {
+			public void run() {
+				try {
+					FrmProveedore frame = new FrmProveedore();
+					frame.setVisible(true);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+		});
+	}
+
+	/**
+	 * Create the frame.
+	 */
+	public FrmProveedore() {
+		getContentPane().setBackground(SystemColor.activeCaption);
+		setIconifiable(true);
+		setClosable(true);
+		setBounds(100, 100, 758, 632);
+		getContentPane().setLayout(null);
+		
+		lblCodigo = new JLabel("Codigo");
+		lblCodigo.setFont(new Font("Comic Sans MS", Font.PLAIN, 16));
+		lblCodigo.setBounds(32, 94, 80, 20);
+		getContentPane().add(lblCodigo);
+		
+		lblRazSocial = new JLabel("Razon Social");
+		lblRazSocial.setFont(new Font("Comic Sans MS", Font.PLAIN, 16));
+		lblRazSocial.setBounds(36, 144, 114, 21);
+		getContentPane().add(lblRazSocial);
+		
+		lblTelefono = new JLabel("Telefono");
+		lblTelefono.setFont(new Font("Comic Sans MS", Font.PLAIN, 16));
+		lblTelefono.setBounds(384, 145, 80, 19);
+		getContentPane().add(lblTelefono);
+		
+		lblDireccion = new JLabel("Direccion");
+		lblDireccion.setFont(new Font("Comic Sans MS", Font.PLAIN, 16));
+		lblDireccion.setBounds(32, 195, 80, 19);
+		getContentPane().add(lblDireccion);
+		
+		lblCorreo = new JLabel("Correo");
+		lblCorreo.setFont(new Font("Comic Sans MS", Font.PLAIN, 16));
+		lblCorreo.setBounds(384, 194, 80, 20);
+		getContentPane().add(lblCorreo);
+		
+		txtCorreoProveedor = new JTextField();
+		txtCorreoProveedor.setColumns(10);
+		txtCorreoProveedor.setBounds(384, 214, 195, 20);
+		getContentPane().add(txtCorreoProveedor);
+		
+		txtDireccionProveedor = new JTextField();
+		txtDireccionProveedor.setColumns(10);
+		txtDireccionProveedor.setBounds(32, 214, 308, 20);
+		getContentPane().add(txtDireccionProveedor);
+		
+		txtTelefonoProveedor = new JTextField();
+		txtTelefonoProveedor.setColumns(10);
+		txtTelefonoProveedor.setBounds(384, 165, 146, 20);
+		getContentPane().add(txtTelefonoProveedor);
+		
+		txtRazonSocialProveedor = new JTextField();
+		txtRazonSocialProveedor.setColumns(10);
+		txtRazonSocialProveedor.setBounds(32, 165, 308, 20);
+		getContentPane().add(txtRazonSocialProveedor);
+		
+		txtCodigoProveedor = new JTextField();
+		txtCodigoProveedor.setColumns(10);
+		txtCodigoProveedor.setBounds(32, 114, 96, 20);
+		getContentPane().add(txtCodigoProveedor);
+		
+		lblMantenimientoDeProveedores = new JLabel("Mantenimiento de Proveedores");
+		lblMantenimientoDeProveedores.setForeground(Color.WHITE);
+		lblMantenimientoDeProveedores.setBackground(Color.BLACK);
+		lblMantenimientoDeProveedores.setOpaque(true);
+		lblMantenimientoDeProveedores.setHorizontalAlignment(SwingConstants.CENTER);
+		lblMantenimientoDeProveedores.setFont(new Font("Trebuchet MS", Font.BOLD, 18));
+		lblMantenimientoDeProveedores.setBounds(0, 28, 746, 47);
+		getContentPane().add(lblMantenimientoDeProveedores);
+		
+		lblRuc = new JLabel("Ruc");
+		lblRuc.setFont(new Font("Comic Sans MS", Font.PLAIN, 16));
+		lblRuc.setBounds(384, 94, 80, 21);
+		getContentPane().add(lblRuc);
+		
+		txtRucProveedores = new JTextField();
+		txtRucProveedores.setColumns(10);
+		txtRucProveedores.setBounds(384, 114, 146, 20);
+		getContentPane().add(txtRucProveedores);
+		
+		btnBuscar = new JButton("");
+		btnBuscar.setOpaque(false);
+		btnBuscar.setBorderPainted(false);
+		btnBuscar.setContentAreaFilled(false);
+		btnBuscar.setIcon(new ImageIcon(FrmProveedore.class.getResource("/img/34229_find_magnifier_search_zoom_icon.png")));
+		btnBuscar.setBounds(138, 102, 32, 32);
+		getContentPane().add(btnBuscar);
+		
+		btnNuevo = new JButton("");
+		btnNuevo.setOpaque(false);
+		btnNuevo.setBorderPainted(false);
+		btnNuevo.setContentAreaFilled(false);
+		btnNuevo.setIcon(new ImageIcon(FrmProveedore.class.getResource("/img/299068_add_sign_icon.png")));
+		btnNuevo.setBounds(578, 244, 32, 32);
+		getContentPane().add(btnNuevo);
+		
+		btnGuardar = new JButton("");
+		btnGuardar.addActionListener(this);
+		btnGuardar.setOpaque(false);
+		btnGuardar.setBorderPainted(false);
+		btnGuardar.setContentAreaFilled(false);
+		btnGuardar.setIcon(new ImageIcon(FrmProveedore.class.getResource("/img/285657_floppy_guardar_save_icon.png")));
+		btnGuardar.setBounds(620, 244, 32, 32);
+		getContentPane().add(btnGuardar);
+		
+		btnActualizar = new JButton("");
+		btnActualizar.setOpaque(false);
+		btnActualizar.setBorderPainted(false);
+		btnActualizar.setContentAreaFilled(false);
+		btnActualizar.setIcon(new ImageIcon(FrmProveedore.class.getResource("/img/46828_reload_refrsh_calculate_icon.png")));
+		btnActualizar.setBounds(662, 244, 32, 32);
+		getContentPane().add(btnActualizar);
+		
+		btnEliminar = new JButton("");
+		btnEliminar.setOpaque(false);
+		btnEliminar.setBorderPainted(false);
+		btnEliminar.setContentAreaFilled(false);
+		btnEliminar.setIcon(new ImageIcon(FrmProveedore.class.getResource("/img/7549103_user_interface_remove_delete_trash_icon.png")));
+		btnEliminar.setBounds(704, 244, 32, 32);
+		getContentPane().add(btnEliminar);
+		
+		scrollPane = new JScrollPane();
+		scrollPane.setBounds(10, 279, 726, 314);
+		getContentPane().add(scrollPane);
+		
+		tblProveedores = new JTable();
+		tblProveedores.setFillsViewportHeight(true);
+		scrollPane.setViewportView(tblProveedores);
+
+	}
+	public void actionPerformed(ActionEvent e) {
+		if (e.getSource() == btnGuardar) {
+			actionPerformedBtnGuardar(e);
+		}
+	}
+
+	protected void actionPerformedBtnGuardar(ActionEvent e) {
+	}
+	
+	private void mensajeExito(String msj) {
+		JOptionPane.showMessageDialog(this,msj);
+		
+	}
+
+	private int getCodigo() {
+		int codigo= 0;
+		if(txtCodigoProveedor.getText().trim().length()==0) {
+			mensajeError("Ingresar codigo");
+			txtCodigoProveedor.requestFocus();
+		}
+		else if (txtCodigoProveedor.getText().trim().matches(Validaciones.Codigo)) {
+			codigo=Integer.parseInt(txtCodigoProveedor.getText().trim());
+		}else {
+			mensajeError("Formato incorrecto de codigo, ingresar 4 numeros");
+			txtCodigoProveedor.setText("");
+			txtCodigoProveedor.requestFocus();
+		}
+		
+		return codigo;
+	}
+
+	private String getRazonSocial() {
+		String razonSocial= null;
+		if(txtRazonSocialProveedor.getText().trim().length()==0) {
+			mensajeError("Ingresar RazonSocial");
+			txtRazonSocialProveedor.requestFocus();
+		}
+		else if (txtRazonSocialProveedor.getText().trim().matches(Validaciones.RazonSocial)) {
+			razonSocial=txtRazonSocialProveedor.getText().trim();
+		}else {
+			mensajeError("Formato incorrecto de RazonSocial, ingresar de 3 a 100 letras");
+			txtRazonSocialProveedor.setText("");
+			txtRazonSocialProveedor.requestFocus();
+		}
+		
+		return razonSocial;
+			
+		}
+	private int getRuc() {
+		int ruc= 0;
+		if(txtRucProveedores.getText().trim().length()==0) {
+			mensajeError("Ingresar Ruc");
+			txtRucProveedores.requestFocus();
+		}
+		else if (txtRucProveedores.getText().trim().matches(Validaciones.RUC)) {
+			ruc=Integer.parseInt(txtRucProveedores.getText().trim());
+		}else {
+			mensajeError("Formato incorrecto de ruc, ingresar 11 numeros");
+			txtRucProveedores.setText("");
+			txtRucProveedores.requestFocus();
+		}
+		return ruc;
+	}
+	
+
+	private int getTelefono() {
+		int telefono= 0;
+		if(txtTelefonoProveedor.getText().trim().length()==0) {
+			mensajeError("Ingresar Telefono");
+			txtTelefonoProveedor.requestFocus();
+		}
+		else if (txtTelefonoProveedor.getText().trim().matches(Validaciones.Telefono)) {
+			telefono=Integer.parseInt(txtTelefonoProveedor.getText().trim());
+		}else {
+			mensajeError("Formato incorrecto de telefono, ingresar 9 numeros");
+			txtTelefonoProveedor.setText("");
+			txtTelefonoProveedor.requestFocus();
+		}
+		return telefono;
+	}
+
+	private String getDireccion() {
+		String direccion= null;
+		if(txtDireccionProveedor.getText().trim().length()==0) {
+			mensajeError("Ingresar Direccion");
+			txtDireccionProveedor.requestFocus();
+		}
+		else if (txtDireccionProveedor.getText().trim().matches(Validaciones.Direccion)) {
+			direccion=txtDireccionProveedor.getText().trim();
+		}else {
+			mensajeError("Formato incorrecto de direccion, ingresar de 3 a 100 letras");
+			txtDireccionProveedor.setText("");
+			txtDireccionProveedor.requestFocus();
+		}
+		
+		return direccion;
+	}
+
+	private String getCorreo() {
+		String correo= null;
+		if(txtCorreoProveedor.getText().trim().length()==0) {
+			mensajeError("Ingresar correo");
+			txtCorreoProveedor.requestFocus();
+		}
+		else if (txtCorreoProveedor.getText().trim().matches(Validaciones.Correo)) {
+			correo=txtCorreoProveedor.getText().trim();
+		}else {
+			mensajeError("Formato incorrecto del correo");
+			txtCorreoProveedor.setText("");
+			txtCorreoProveedor.requestFocus();
+		}
+		
+		
+		return correo;
+	}
+
+	private void mensajeError(String msj) {
+		JOptionPane.showMessageDialog(this,msj,"Error",0);
+		//prueba de edicion de codigo
+		
+	}
+
+
+	private void actualizarProveedor() {
+		
+	}
+
+	private void buscarDatosProveedores() {
+		int codigo;
+		codigo = getCodigo();
+		if(codigo == -1) {
+			return;
+		}else {
+			Proveedores provee = gProvee.buscarProveedores(codigo);
+			if(provee == null) {
+				mensajeError("No existe el proveedor");
+			}else {
+				txtRazonSocialProveedor.setText(provee.getRazonSocial());
+				txtRucProveedores.setText(""+provee.getRuc());
+				txtDireccionProveedor.setText(provee.getDireccion());
+				txtCorreoProveedor.setText(provee.getCorreo());
+				txtTelefonoProveedor.setText(""+provee.getTelefono());
+				
+			}
+		}
+			
+	}
+}
+

@@ -1,0 +1,142 @@
+package mantenimiento;
+
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.ArrayList;
+
+import entidad.DetalleFactura;
+import entidad.Factura;
+import interfaces.VentasInterfacesDAO;
+import utils.MySQLConexion8;
+
+public class GestionVentasDAO implements VentasInterfacesDAO{
+
+	@Override
+	public int generarNumeroFactura() {
+		int idFactura = 0;
+		Connection con = null;
+		PreparedStatement pstm = null;
+		ResultSet res = null;
+		try {
+			//Conexion con la BD
+			con = MySQLConexion8.getConexion();
+			
+			// Intruccion SQL
+			String sql = "select max(id_factura) from tb_factura;";
+			
+			// Crear el objeto PSTM y enviar la instruccion SQL
+			pstm = con.prepareStatement(sql);
+			
+			// No hay parametros
+			
+			// Ejecutar la instruccion
+			res = pstm.executeQuery();
+			
+			// Validar
+			if(res.next()) {
+				
+				idFactura = (res.getInt(1)+1);
+			}
+			
+		} catch (Exception e) {
+			System.out.println("Error al generar número de factura "+e.getMessage());
+		}finally {
+			try {
+				if(pstm != null) pstm.close();
+				if(res != null) res.close();
+				if(con != null) con.close();
+			} catch (SQLException e2) {
+				System.out.println("Error al cerrar la BD "+e2.getMessage());
+			}
+		}
+		
+		return idFactura;
+	}
+
+	@Override
+	public int realizarVenta(Factura fac, ArrayList<DetalleFactura> detFac) {
+		int estado = 0;
+		Connection con = null;
+		PreparedStatement pstm1 = null; // Registrar tb_factura
+		PreparedStatement pstm2 = null; // Registrar tb_detalle_factura
+		PreparedStatement pstm3 = null; // Actualizar la tb_productos --Stock--
+		try {
+			// 1. Conexion con la BD
+			con = MySQLConexion8.getConexion();
+			
+			// 2. Desactivar la confirmación automatica
+			con.setAutoCommit(false);
+			// Proceso 1: Registrar tb_cab_boleta
+			// Instruccion SQL
+			String sql1 = "insert into tb_factura values (?,?,?,?,?);";
+			
+			//
+			pstm1 = con.prepareStatement(sql1);
+			
+			// Parametros
+			pstm1.setInt(1, fac.getIdFactura());
+			pstm1.setString(2, fac.getFecha());
+			pstm1.setInt(3, fac.getIdCliente());
+			pstm1.setInt(4, fac.getIdUsuario());
+			pstm1.setDouble(5, fac.getTotFactura());
+			
+			// Ejecutar
+			estado = pstm1.executeUpdate();
+			
+			// Proceso 2: Registrar tb_det_boleta
+			String sql2 = "insert into tb_detallefactura (?,?,?,?,?);";
+			//
+			for (DetalleFactura f : detFac) {
+				pstm2 = con.prepareStatement(sql2);
+				
+				// Parametros
+				pstm2.setInt(1, fac.getIdFactura());
+				pstm2.setInt(2, f.getIdProductos());
+				pstm2.setInt(3, f.getCantPedidos());
+				pstm2.setDouble(4, f.getPrecioVenta());
+				pstm2.setDouble(5, f.getPrecioTotal());
+				
+				// Ejecutar la sentencia
+				estado = pstm2.executeUpdate();								
+			}
+			
+			// Proceso 3: Actualizar el stock tb_productos
+			String sql3 = "update tb_productos set stock = stock - ? where idProd = ?";
+			for (DetalleFactura f : detFac) {
+				//
+				pstm3 = con.prepareStatement(sql3);
+				// Parametros
+				pstm3.setInt(1, f.getCantPedidos());
+				pstm3.setInt(2, f.getIdProductos());
+				
+				// Ejecutar 
+				estado = pstm3.executeUpdate();
+			}
+			
+			// Confirmar las transacciones
+			con.commit();						
+			
+		} catch (Exception e) {
+			System.out.println("Error al realizar la venta "+e.getMessage());
+			estado = 0;
+			try {
+				con.rollback(); // Restaurar la informacion de la BD antes de ejecutarse la accion
+			} catch (Exception e2) {
+				System.out.println("Error al restaurar la BD "+e2.getMessage());
+			}
+		}finally {
+			try {
+				if(pstm1 != null) pstm1.close();
+				if(pstm2 != null) pstm2.close();
+				if(pstm3 != null) pstm3.close();				
+				if(con != null) con.close();
+			} catch (SQLException e2) {
+				System.out.println("Error al cerrar la BD "+e2.getMessage());
+			}
+		}
+		return estado;
+	}
+
+}

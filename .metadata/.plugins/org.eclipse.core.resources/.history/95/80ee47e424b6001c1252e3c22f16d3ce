@@ -1,0 +1,18 @@
+package interfaces;
+
+import entidad.Proveedores;
+
+public interface ProveedoresInterfacesDAO {
+	//se determinan los procesos que realiza la aplicacion
+	
+		public int registrar (Proveedores p);
+		
+		public int actualizar(Proveedores p);
+		
+		public int eliminar(int codigo);
+		
+		public Proveedores buscarProveedores(int codigo);
+		
+		
+
+}

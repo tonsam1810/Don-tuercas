@@ -1,0 +1,6 @@
+package interfaces;
+
+public interface VentasInterfacesDAO {
+
+	// Método para generar el nro de factura
+}

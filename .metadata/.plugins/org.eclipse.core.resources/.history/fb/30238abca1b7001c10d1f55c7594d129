@@ -1,0 +1,8 @@
+package entidad;
+
+public class DetalleFactura {
+
+	// Atributos privados
+	private int idfactura;
+	
+}

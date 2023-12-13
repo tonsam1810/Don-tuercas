@@ -1,0 +1,64 @@
+package mantenimiento;
+
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.ArrayList;
+
+import entidad.DetalleFactura;
+import entidad.Factura;
+import interfaces.VentasInterfacesDAO;
+import utils.MySQLConexion8;
+
+public class GestionVentasDAO implements VentasInterfacesDAO{
+
+	@Override
+	public int generarNumeroFactura() {
+		int idFactura = 0;
+		Connection con = null;
+		PreparedStatement pstm = null;
+		ResultSet res = null;
+		try {
+			//Conexion con la BD
+			con = MySQLConexion8.getConexion();
+			
+			// Intruccion SQL
+			String sql = "select max(id_factura) from tb_factura;";
+			
+			// Crear el objeto PSTM y enviar la instruccion SQL
+			pstm = con.prepareStatement(sql);
+			
+			// No hay parametros
+			
+			// Ejecutar la instruccion
+			res = pstm.executeQuery();
+			
+			// Validar
+			if(res.next()) {
+				
+				idFactura = (res.getInt(1)+1);
+			}
+			
+		} catch (Exception e) {
+			System.out.println("Error al generar número de factura "+e.getMessage());
+		}finally {
+			try {
+				if(pstm != null) pstm.close();
+				if(res != null) res.close();
+				if(con != null) con.close();
+			} catch (SQLException e2) {
+				System.out.println("Error al cerrar la BD "+e2.getMessage());
+			}
+		}
+		
+		return idFactura;
+	}
+
+	@Override
+	public int realizarVenta(Factura fac, ArrayList<DetalleFactura> detFac) {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+}
